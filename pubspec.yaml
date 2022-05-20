@@ -28,6 +28,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter_bloc: ^8.0.1
+  firebase_core: ^1.17.0
+
 
   flutter:
     sdk: flutter
@@ -64,7 +66,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/book.png
+    - assets/images/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

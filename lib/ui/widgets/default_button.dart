@@ -5,8 +5,10 @@ import '../../constants/colors.dart';
 
 class DefaultButton extends StatelessWidget {
   final String label;
+  final Function() onPressed;
 
-  const DefaultButton({Key? key, required this.label}) : super(key: key);
+  const DefaultButton({Key? key, required this.label, required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +18,12 @@ class DefaultButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           alignment: Alignment.center,
           primary: MyColors.defaultPurple,
+          surfaceTintColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        onPressed: () {},
+        onPressed: onPressed,
         child: Text(
           label,
           style: Theme.of(context).textTheme.labelLarge!.copyWith(
