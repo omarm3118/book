@@ -16,21 +16,24 @@ class RegisterScreen extends StatelessWidget {
       statusBarColor: MyColors.defaultBackgroundPurple,
       statusBarIconBrightness: Brightness.light,
     ));
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenHeightMinusStatusBar =
+        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: (screenHeight > maxHeight ? maxHeight : screenHeight),
-              maxWidth: maxWidth,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                loginBanner(),
-                loginBody(context),
-              ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: (screenHeightMinusStatusBar > maxHeight ? maxHeight : screenHeightMinusStatusBar),
+                maxWidth: maxWidth,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  loginBanner(),
+                  loginBody(context),
+                ],
+              ),
             ),
           ),
         ),

@@ -24,14 +24,14 @@ ListView itemsBuilder(items) {
   return ListView.separated(
     shrinkWrap: true,
     itemBuilder: (BuildContext context, int index) =>
-        fieldItem(context, items[index]),
+        itemField(context, items[index]),
     separatorBuilder: (BuildContext context, int index) =>
     const Divider(height: 18),
     itemCount: items.length,
   );
 }
 
-Row fieldItem(BuildContext context, String item) {
+Row itemField(BuildContext context, String item) {
   return Row(
     children: [
       Container(

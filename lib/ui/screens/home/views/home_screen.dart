@@ -2,8 +2,9 @@ import 'package:book/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../constants/strings.dart';
-import 'components/home_components.dart';
+import '../../../../constants/strings.dart';
+import '../components/home_components.dart';
+import 'search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,52 +18,47 @@ class HomeScreen extends StatelessWidget {
 //Todo direction of Navbar rtl
 
     double statusBar = MediaQuery.of(context).viewPadding.top;
-    return Scaffold(
-      body: Column(
-        children: [
-          Container(
-              height: statusBar,
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [0.02, 0.5, 1],
-                colors: [
-                  Color(0xff584F8B),
-                  MyColors.defaultBackgroundPurple,
-                  MyColors.defaultBackgroundPurple,
-                ],
-              ))),
-          Flexible(
-            child: CustomScrollView(
-              slivers: [
-                appBar(context),
-                sliverList(context),
-              ],
-            ),
+    return Column(
+      children: [
+        statusBarColor(statusBar),
+        Flexible(
+          child: CustomScrollView(
+            slivers: [
+              sliverAppBar(context),
+              sliverList(context),
+            ],
           ),
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
+        ),
+      ],
+    );
+  }
 
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_filled),
-            label: 'home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.search),
-            label: 'search',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.bookmark_rounded),
-            label: 'bookMark',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.group),
-            label: 'group',
-          ),
-        ],
+  statusBarColor(statusBar) {
+    return Container(
+      height: statusBar,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0.02, 0.5, 1],
+          colors: [
+            Color(0xff584F8B),
+            MyColors.defaultBackgroundPurple,
+            MyColors.defaultBackgroundPurple,
+          ],
+        ),
+      ),
+    );
+  }
+
+  SliverAppBar sliverAppBar(BuildContext context) {
+    return SliverAppBar(
+      backgroundColor: MyColors.defaultBackgroundPurple,
+      snap: true,
+      floating: true,
+      expandedHeight: 180,
+      flexibleSpace: FlexibleSpaceBar(
+        background: header(context),
       ),
     );
   }
@@ -73,18 +69,6 @@ class HomeScreen extends StatelessWidget {
         [
           body(context),
         ],
-      ),
-    );
-  }
-
-  SliverAppBar appBar(BuildContext context) {
-    return SliverAppBar(
-      backgroundColor: MyColors.defaultBackgroundPurple,
-      snap: true,
-      floating: true,
-      expandedHeight: 180,
-      flexibleSpace: FlexibleSpaceBar(
-        background: header(context),
       ),
     );
   }
@@ -145,13 +129,21 @@ class HomeScreen extends StatelessWidget {
             crossAxisCount: 2,
             children: [
               readerProgressInfo(context,
-                  label: 'عدد الكتب التي قرأتها', number: '20',path: 'assets/images/firest.png'),
+                  label: 'عدد الكتب التي قرأتها',
+                  number: '20',
+                  path: 'assets/images/first.png'),
               readerProgressInfo(context,
-                  label: 'عدد الصفحات التي قرأتها', number: '15000',path: 'assets/images/se.png'),
+                  label: 'عدد الصفحات التي قرأتها',
+                  number: '15000',
+                  path: 'assets/images/se.png'),
               readerProgressInfo(context,
-                  label: 'عدد الأطروحات المكتوبة', number: '80',path: 'assets/images/th.png'),
+                  label: 'عدد الأطروحات المكتوبة',
+                  number: '80',
+                  path: 'assets/images/th.png'),
               readerProgressInfo(context,
-                  label: 'عدد الصفحات المنجزة اليوم', number: '120',path: 'assets/images/fo.png'),
+                  label: 'عدد الصفحات المنجزة اليوم',
+                  number: '120',
+                  path: 'assets/images/fo.png'),
             ],
           )
         ],

@@ -1,3 +1,4 @@
+import 'package:book/constants/strings.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../constants/colors.dart';
@@ -38,7 +39,12 @@ OutlinedButton goToCoursesButton(BuildContext context) {
       ),
       minimumSize: const Size(0, 0),
     ),
-    onPressed: () {},
+    onPressed: () {
+      Navigator.pushNamed(
+        context,
+        cultureCoursesRoute,
+      );
+    },
     child: Text(
       'المناهج الثقافية',
       style: Theme.of(context).textTheme.labelLarge!.copyWith(
@@ -192,5 +198,28 @@ Card readerProgressInfo(context,
         ],
       ),
     ),
+  );
+}
+
+NavigationBar navigationBar() {
+  return NavigationBar(
+    destinations: const [
+      NavigationDestination(
+        icon: Icon(Icons.home_filled),
+        label: 'home',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.search),
+        label: 'search',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.bookmark_rounded),
+        label: 'bookMark',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.group),
+        label: 'group',
+      ),
+    ],
   );
 }

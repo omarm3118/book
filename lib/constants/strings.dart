@@ -1,7 +1,8 @@
 const String loginRoute='/';
 const String registerRoute='/RegisterScreen';
 const String chooseFavoriteFieldsRoute='/ChooseFavoriteFieldsScreen';
-const String homeRoute='HomeScreen';
+const String homeRoute='/LayoutScreen';
+const String cultureCoursesRoute='/CultureCoursesScreen';
 
 
 

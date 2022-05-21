@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'components/login_components.dart';
 
 class LoginScreen extends StatelessWidget {
-   LoginScreen({Key? key}) : super(key: key);
+  LoginScreen({Key? key}) : super(key: key);
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -14,21 +14,26 @@ class LoginScreen extends StatelessWidget {
       statusBarColor: MyColors.defaultBackgroundPurple,
       statusBarIconBrightness: Brightness.light,
     ));
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenHeightMinusStatusBar =
+        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: (screenHeight > maxHeight ? maxHeight : screenHeight),
-              maxWidth: maxWidth,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                loginBanner(),
-                loginBody(context),
-              ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: (screenHeightMinusStatusBar > maxHeight
+                    ? maxHeight
+                    : screenHeightMinusStatusBar),
+                maxWidth: maxWidth,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  loginBanner(),
+                  loginBody(context),
+                ],
+              ),
             ),
           ),
         ),
@@ -37,13 +42,13 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget loginBanner() {
+    //Todo put right home banner image
     return Expanded(
       child: Container(
         width: double.infinity,
         color: MyColors.defaultBackgroundPurple,
-        alignment: Alignment.center,
         child: Image.asset(
-          'assets/images/book.png',
+          'assets/images/Illustration.png',
           fit: BoxFit.cover,
         ),
       ),
