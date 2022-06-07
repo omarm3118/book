@@ -5,9 +5,11 @@ import '../../constants/colors.dart';
 
 class DefaultButton extends StatelessWidget {
   final String label;
-  final Function() onPressed;
+  final void Function()? onPressed;
+  final TextStyle? labelStyle;
 
-  const DefaultButton({Key? key, required this.label, required this.onPressed})
+  const DefaultButton(
+      {Key? key, required this.label, required this.onPressed, this.labelStyle})
       : super(key: key);
 
   @override
@@ -26,7 +28,7 @@ class DefaultButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           label,
-          style: Theme.of(context).textTheme.labelLarge!.copyWith(
+          style:labelStyle?? Theme.of(context).textTheme.labelLarge!.copyWith(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,

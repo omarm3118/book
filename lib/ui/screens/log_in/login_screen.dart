@@ -6,51 +6,48 @@ import 'components/login_components.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //Todo with or without safeArea
+    SystemUiOverlayStyle statusBarColor = const SystemUiOverlayStyle(
       statusBarColor: MyColors.defaultBackgroundPurple,
       statusBarIconBrightness: Brightness.light,
-    ));
-    double screenHeightMinusStatusBar =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+    );
+    // double screenHeightMinusStatusBar =
+    //     MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: (screenHeightMinusStatusBar > maxHeight
-                    ? maxHeight
-                    : screenHeightMinusStatusBar),
-                maxWidth: maxWidth,
-              ),
+      body: AnnotatedRegion(
+        value: statusBarColor,
+        child: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  loginBanner(),
+                  Expanded(child: loginBanner()),
                   loginBody(context),
                 ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
   Widget loginBanner() {
-    //Todo put right home banner image
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        color: MyColors.defaultBackgroundPurple,
-        child: Image.asset(
-          'assets/images/Illustration.png',
-          fit: BoxFit.cover,
-        ),
+    //Todo put right home banner image svg file
+    return Container(
+      width: double.infinity,
+      color: MyColors.defaultBackgroundPurple,
+      child: Image.asset(
+        'assets/images/book.png',
+        fit: BoxFit.cover,
       ),
     );
   }
@@ -67,6 +64,7 @@ class LoginScreen extends StatelessWidget {
         key: formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               "تسجيل الدخول",
@@ -75,16 +73,26 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(
               height: 9,
             ),
-            loginEmailField(),
+            loginEmailField(
+              emailController: emailController,
+            ),
             const SizedBox(
               height: defaultPadding,
             ),
-            loginPasswordField(context),
+            loginPasswordField(
+              context,
+              passwordController: passwordController,
+            ),
             loginForgetPasswordButton(context),
             const SizedBox(
               height: defaultPadding,
             ),
-            loginSignInButton(formKey),
+            loginSignInButton(
+              formKey,
+              email: emailController,
+              password: passwordController,
+              context: context,
+            ),
             loginRegisterButton(context)
           ],
         ),

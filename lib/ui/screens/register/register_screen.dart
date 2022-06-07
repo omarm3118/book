@@ -1,41 +1,46 @@
 import 'package:book/constants/colors.dart';
 import 'package:book/constants/strings.dart';
-import 'package:book/ui/widgets/text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'componentes/register_components.dart';
+import 'components/register_components.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({Key? key}) : super(key: key);
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //Todo with or without safeArea
+
+    SystemUiOverlayStyle statusBarColor = const SystemUiOverlayStyle(
       statusBarColor: MyColors.defaultBackgroundPurple,
       statusBarIconBrightness: Brightness.light,
-    ));
-    double screenHeightMinusStatusBar =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+    );
+    // double screenHeightMinusStatusBar =
+    //     MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: (screenHeightMinusStatusBar > maxHeight ? maxHeight : screenHeightMinusStatusBar),
-                maxWidth: maxWidth,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  loginBanner(),
-                  loginBody(context),
-                ],
+      body: AnnotatedRegion(
+        value: statusBarColor,
+        child: CustomScrollView(
+          slivers: [
+            SliverSafeArea(
+              sliver: SliverFillRemaining(
+                hasScrollBody: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    loginBanner(),
+                    loginBody(context),
+                  ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -54,12 +59,12 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  Widget loginBody(BuildContext context) {
+  loginBody(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
         left: defaultPadding,
         right: defaultPadding,
-        top: defaultPadding/2,
+        top: defaultPadding / 2,
         bottom: defaultPadding / 4,
       ),
       child: Form(
@@ -74,23 +79,30 @@ class RegisterScreen extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-            registerNameField(),
+            registerNameField(nameController),
             const SizedBox(
               height: 8,
             ),
-            registerLastNameField(),
+            registerLastNameField(lastNameController),
             const SizedBox(
               height: 8,
             ),
-            registerEmailField(),
+            registerEmailField(emailController),
             const SizedBox(
               height: 8,
             ),
-            registerPasswordField(context),
+            registerPasswordField(context, passwordController),
             const SizedBox(
               height: defaultPadding / 2,
             ),
-            registerRegisterButton(formKey,context),
+            registerRegisterButton(
+              formKey,
+              context,
+              email: emailController,
+              password: passwordController,
+              name: nameController,
+              lastName: lastNameController,
+            ),
             registerLoginButton(context),
           ],
         ),

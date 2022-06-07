@@ -1,14 +1,22 @@
 import 'package:book/app_route.dart';
-import 'package:book/constants/colors.dart';
-import 'package:book/ui/screens/log_in/controller/login_cubit.dart';
+import 'package:book/constants/strings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'bloc_observer.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+import 'constants/app_themes.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   BlocOverrides.runZoned(
     () {
       runApp(const MyApp());
@@ -23,54 +31,22 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      onGenerateRoute: const AppRoute().generateRoute,
-      theme: ThemeData(
-        useMaterial3: true,
-        primaryColor: MyColors.defaultPurple,
-        primarySwatch: MaterialColor(0xFF93278F, {
-          50: MyColors.defaultPurple.withOpacity(0.9),
-          100: MyColors.defaultPurple.withOpacity(0.8),
-          200: MyColors.defaultPurple.withOpacity(0.7),
-          300: MyColors.defaultPurple.withOpacity(0.6),
-          400: MyColors.defaultPurple.withOpacity(0.5),
-          500: MyColors.defaultPurple.withOpacity(0.4),
-          600: MyColors.defaultPurple.withOpacity(0.3),
-          700: MyColors.defaultPurple.withOpacity(0.2),
-          800: MyColors.defaultPurple.withOpacity(0.1),
-          900: MyColors.defaultPurple,
-        }),
-        appBarTheme: const AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: MyColors.defaultBackgroundPurple,
-            statusBarIconBrightness: Brightness.light,
-          ),
-        ),
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      initialData: FirebaseAuth.instance.currentUser,
+      builder: (BuildContext context, AsyncSnapshot<Object?> snap) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          onGenerateRoute: AppRoute().generateRoute,
+          theme: MyThemes.myLightTheme,
+          initialRoute:
+              snap.data == null ? loginRoute : homeRoute,
 
-        // SemiBold 600 // Medium 500 // Normal(Regular) 400 // Light 300
-        textTheme: const TextTheme(
-          headlineSmall: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-          titleMedium: TextStyle(
-            fontWeight: FontWeight.w600,
-          ),
-          titleSmall: TextStyle(
-            fontWeight: FontWeight.w600,
-          ),
-          labelLarge: TextStyle(
-            color: Color(0xff808080),
-          ),
-        ),
-
-        navigationBarTheme: NavigationBarThemeData(
-            indicatorColor: Colors.indigo.withOpacity(0.5),
-            height: 50,
-            backgroundColor: Colors.white,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide),
-      ),
+        );
+      },
     );
   }
+
+
 }

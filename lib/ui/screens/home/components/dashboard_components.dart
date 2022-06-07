@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 
 import '../../../../constants/colors.dart';
 import '../../../widgets/default_button.dart';
+import '../controller/layout_cubit.dart';
 
 Text headerWelcome(BuildContext context) {
   return Text(
-    '👋 مرحبًا، عبداللّه ',
+    '👋 مرحبًا، ${LayoutCubit.getUser?.name} ',
     style: Theme.of(context).textTheme.titleMedium!.copyWith(
           color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
-    maxLines: 1,
-    textAlign: TextAlign.start,
+    maxLines: 2,
+    textAlign: TextAlign.center,
     overflow: TextOverflow.ellipsis,
   );
 }
@@ -43,6 +44,7 @@ OutlinedButton goToCoursesButton(BuildContext context) {
       Navigator.pushNamed(
         context,
         cultureCoursesRoute,
+        arguments: {'context': context},
       );
     },
     child: Text(
@@ -201,8 +203,19 @@ Card readerProgressInfo(context,
   );
 }
 
-NavigationBar navigationBar() {
+NavigationBar navigationBar(layoutCubit, context) {
   return NavigationBar(
+    selectedIndex: layoutCubit.navBarIndex,
+    onDestinationSelected: (int index) {
+      if (index == 3) {
+        Navigator.pushNamed(
+          context,
+          myGroupsRoute,
+        );
+      } else {
+        layoutCubit.changeNavBar(index);
+      }
+    },
     destinations: const [
       NavigationDestination(
         icon: Icon(Icons.home_filled),

@@ -7,3 +7,4 @@ class MyColors{
   static const defaultIconColor= Color(0xffA7A7A7);
 
 }
+

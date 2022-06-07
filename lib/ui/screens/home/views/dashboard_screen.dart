@@ -3,37 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../constants/strings.dart';
-import '../components/home_components.dart';
-import 'search_screen.dart';
+import '../components/dashboard_components.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    SystemUiOverlayStyle statusBarColor = const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
-    ));
+    );
+
 //Todo direction of Navbar rtl
 
     double statusBar = MediaQuery.of(context).viewPadding.top;
-    return Column(
-      children: [
-        statusBarColor(statusBar),
-        Flexible(
-          child: CustomScrollView(
-            slivers: [
-              sliverAppBar(context),
-              sliverList(context),
-            ],
+    return AnnotatedRegion(
+      value: statusBarColor,
+      child: Column(
+        children: [
+          statusBarContainer(statusBar),
+          Flexible(
+            child: CustomScrollView(
+              slivers: [
+                sliverAppBar(context),
+                sliverList(context),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  statusBarColor(statusBar) {
+  statusBarContainer(statusBar) {
     return Container(
       height: statusBar,
       decoration: const BoxDecoration(
@@ -145,9 +148,12 @@ class HomeScreen extends StatelessWidget {
                   number: '120',
                   path: 'assets/images/fo.png'),
             ],
-          )
+          ),
         ],
       ),
     );
   }
+
+
+
 }
