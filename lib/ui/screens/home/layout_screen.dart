@@ -1,6 +1,9 @@
 import 'package:book/constants/strings.dart';
+import 'package:book/data/models/user_model.dart';
 import 'package:book/ui/screens/home/controller/layout_cubit.dart';
 import 'package:book/ui/widgets/conditional_builder.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'components/dashboard_components.dart';
@@ -15,21 +18,46 @@ class LayoutScreen extends StatefulWidget {
 class _LayoutScreenState extends State<LayoutScreen> {
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      if (!(FirebaseAuth.instance.currentUser!.emailVerified)) {
+        Navigator.pushReplacementNamed(
+          context,
+          emailVerificationRoute,
+        );
+      }
+    }
     LayoutCubit layoutCubit = BlocProvider.of<LayoutCubit>(context);
-
+    if (LayoutCubit.getUser != null) {
+      if (LayoutCubit.getUser!.favoriteFields.isNotEmpty) {
+        layoutCubit
+          ..getUserInfo()
+          ..getBooks()
+          ..getAllUsers();
+      }
+    }
     return BlocConsumer<LayoutCubit, LayoutState>(
       listener: (context, state) {
-        if (LayoutCubit.getUser != null) {
-          if (LayoutCubit.getUser!.favoriteFields.isEmpty) {
-            Navigator.pushReplacementNamed(context, chooseFavoriteFieldsRoute);
+
+          if (LayoutCubit.getUser != null && state is! GetUserSuccessState) {
+            if (LayoutCubit.getUser!.favoriteFields.isEmpty) {
+              Navigator.pushReplacementNamed(
+                context,
+                chooseFavoriteFieldsRoute,
+              );
+            }
           }
-        }
+
       },
       builder: (context, state) {
+        UserModel? user = LayoutCubit.getUser;
+
         return Scaffold(
           body: ConditionalBuilder(
-            successWidget: (context) =>
-                layoutCubit.layoutScreens[layoutCubit.navBarIndex],
+            successWidget: (context) {
+              user = LayoutCubit.getUser;
+
+              return layoutCubit.layoutScreens[layoutCubit.navBarIndex];
+            },
             fallbackWidget: (context) => const Center(
               child: CircularProgressIndicator(),
             ),
@@ -39,7 +67,72 @@ class _LayoutScreenState extends State<LayoutScreen> {
                 LayoutCubit.getUser != null &&
                 LayoutCubit.getCubit(context).books.isNotEmpty,
           ),
-          bottomNavigationBar: navigationBar(layoutCubit,context),
+          bottomNavigationBar: navigationBar(layoutCubit, context),
+          drawer: LayoutCubit.getUser == null
+              ? Container()
+              : Drawer(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(defaultRadius)),
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              userEditInfoRoute,
+                              arguments: {
+                                'heroId': user!.uId,
+                                'user': user,
+                                'context': context,
+                              },
+                            );
+                          },
+                          child: Text(
+                            'تعديل',
+                          ),
+                        ),
+                        UserAccountsDrawerHeader(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          accountName: Text(
+                            user!.name,
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          accountEmail: Text(
+                            user!.email,
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          currentAccountPicture: Hero(
+                            tag: user!.uId,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              backgroundImage: CachedNetworkImageProvider(
+                                user!.image,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        Container(
+                          alignment: Alignment.center,
+                          child: TextButton(
+                            style: TextButton.styleFrom(),
+                            onPressed: () {
+                              layoutCubit.signOut(context);
+                            },
+                            child: Text(
+                              'تسجيل الخروج',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
         );
       },
     );

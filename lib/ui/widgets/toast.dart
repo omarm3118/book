@@ -1,11 +1,12 @@
+import 'package:book/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
- Future<bool?> showingToast({
+Future<bool?> showingToast({
   required String msg,
   required ToastState state,
+  bool isGravityTop=false,
 }) async {
-
   Color toastColor;
 
   switch (state) {
@@ -18,6 +19,9 @@ import 'package:fluttertoast/fluttertoast.dart';
     case ToastState.warning:
       toastColor = Colors.amber;
       break;
+    case ToastState.checked:
+      toastColor = MyColors.defaultPurple.withOpacity(0.7);
+      break;
     default:
       toastColor = Colors.black87;
   }
@@ -25,10 +29,10 @@ import 'package:fluttertoast/fluttertoast.dart';
   return await Fluttertoast.showToast(
     msg: msg,
     textColor: Colors.white,
-    gravity: ToastGravity.BOTTOM,
+    gravity: isGravityTop?ToastGravity.TOP:ToastGravity.BOTTOM,
     toastLength: Toast.LENGTH_LONG,
     backgroundColor: toastColor,
   );
 }
 
-enum ToastState { success, error, warning }
+enum ToastState { success, error, warning, checked }

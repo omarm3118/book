@@ -12,12 +12,7 @@ import 'components/groups_components.dart';
 class GroupsScreen extends StatelessWidget {
   GroupsScreen({Key? key}) : super(key: key);
   final UserModel? user = LayoutCubit.getUser;
-  final List<String> items = const [
-    'مجموعة التاريخ الإسلامي',
-    'مجموعة تاريخ العرب',
-    'مجموعة الفلسفة',
-    'مجموعة كتب المنطق',
-  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,43 +42,44 @@ class GroupsScreen extends StatelessWidget {
               bottom: defaultPadding,
             ),
             child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  title(context),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  subTitle(context),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  //Todo convert Icon when press
-                  // this take ( 9+1= 10 )  ( 9/10= 0.90)
-                  BlocBuilder<GroupsCubit, GroupsState>(
-                    builder: (context, state) {
-                      return ConditionalBuilder(
-                        successWidget: (_) => Expanded(
-                            flex: 9,
-                            child: Column(
-                              children: [
-                                if(state is AddToGroupLoadingState)
-                                  const LinearProgressIndicator(),
-
-                                  itemsBuilder(cubit.groups, user!.uId),
-                              ],
-                            )),
-                        fallbackWidget: (_) => const Center(
-                          child: CircularProgressIndicator(),
+              child: BlocBuilder<GroupsCubit, GroupsState>(
+                builder: (context, state) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (cubit.groups.isNotEmpty) title(context),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      if (cubit.groups.isNotEmpty) subTitle(context),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //Todo convert Icon when press  if(state is AddToGroupLoadingState)
+                      //                   const LinearProgressIndicator(),
+                      if (state is AddToGroupLoadingState)
+                        const LinearProgressIndicator(),
+                      Expanded(
+                        flex: 10,
+                        child: ConditionalBuilder(
+                          successWidget: (_) =>
+                              itemsBuilder(cubit.groups, user!.uId),
+                          fallbackWidget: (_) => state is GetGroupsLoadingState
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Center(child: Text('لا يوجد أي فريق بعد')),
+                          condition: state is! GetGroupsLoadingState &&
+                              cubit.groups.isNotEmpty,
                         ),
-                        condition: state is! GetGroupsLoadingState &&
-                            cubit.groups.isNotEmpty,
-                      );
-                    },
-                  ),
-                  const Spacer(),
-                  nextButton(context)
-                ],
+                      ),
+
+                      // this take ( 10+1= 11 )  ( 10/11= 0.93)
+                      //  const Spacer(),
+                      // nextButton(context)
+                    ],
+                  );
+                },
               ),
             ),
           ),

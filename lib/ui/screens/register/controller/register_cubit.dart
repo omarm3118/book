@@ -70,4 +70,6 @@ class RegisterCubit extends Cubit<RegisterState> {
       emit(AddUserToFirestoreErrorState());
     }
   }
+
+
 }

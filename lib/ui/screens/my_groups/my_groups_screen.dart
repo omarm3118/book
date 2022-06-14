@@ -47,12 +47,15 @@ class MyGroupsScreen extends StatelessWidget {
                   builder: (context, state) {
                     return ConditionalBuilder(
                         successWidget: (_) => Expanded(
-                            flex: 10,
-                            child: cubit.myGroups.isNotEmpty
-                                ? itemsBuilder(
-                                    cubit.myGroups,
-                                  )
-                                : const Text('اكتشف الفرق')),
+                              flex: 10,
+                              child: cubit.myGroups.isNotEmpty
+                                  ? itemsBuilder(
+                                      cubit.myGroups,
+                                    )
+                                  : Center(
+                                      child: const Text('لم تكتشف أي فريق بعد'),
+                                    ),
+                            ),
                         fallbackWidget: (_) => const Center(
                               child: CircularProgressIndicator(),
                             ),

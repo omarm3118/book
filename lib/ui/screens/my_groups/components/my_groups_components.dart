@@ -7,7 +7,7 @@ import '../../../widgets/default_button.dart';
 
 Text title(BuildContext context) {
   return Text(
-    "المجموعات الخاصة بك",
+    "الفرق الخاصة بك",
     style: Theme.of(context).textTheme.headlineSmall,
   );
 }
@@ -28,7 +28,7 @@ InkWell itemField(BuildContext context, GroupModel group) {
     onTap: () {
       Navigator.pushNamed(context, feedRoute, arguments: {
         'context': context,
-        'group':group,
+        'group': group,
       });
     },
     child: Row(
@@ -71,7 +71,7 @@ buttons(context) {
     children: [
       Expanded(
         child: DefaultButton(
-          label: 'اكتشف المجموعات',
+          label: 'اكتشف الفرق',
           onPressed: () {
             Navigator.pushNamed(context, groupsRoute,
                 arguments: {'context': context});
@@ -96,7 +96,7 @@ buttons(context) {
             });
           },
           child: Text(
-            'إنشاء مجموعة جديدة',
+            'إنشاء فريق جديدة',
             style: Theme.of(context).textTheme.labelLarge!.copyWith(
                   color: MyColors.defaultPurple,
                   fontSize: 14,

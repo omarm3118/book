@@ -1,6 +1,7 @@
 import 'package:book/constants/strings.dart';
 import 'package:book/ui/screens/register/controller/register_cubit.dart';
 import 'package:book/ui/widgets/conditional_builder.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,7 +14,7 @@ DefaultTextFormField registerLastNameField(
   return DefaultTextFormField(
     validator: (String? val) {
       if (val!.isEmpty) {
-        return 'name2 must not be empty';
+        return 'أدخل الاسم';
       }
       return null;
     },
@@ -28,7 +29,7 @@ DefaultTextFormField registerNameField(TextEditingController nameController) {
   return DefaultTextFormField(
     validator: (String? val) {
       if (val!.isEmpty) {
-        return 'name must not be empty';
+        return 'أدخل الاسم';
       }
       return null;
     },
@@ -44,12 +45,12 @@ DefaultTextFormField registerEmailField(TextEditingController emailController) {
     textEditingController: emailController,
     validator: (String? val) {
       if (val!.isEmpty) {
-        return 'email must not be empty';
+        return 'أدخل البريد الإلكتروني';
       }
       return null;
     },
     textInputAction: TextInputAction.next,
-    label: 'اسم المستخدم',
+    label: 'البريد الإلكتروني',
     preIcon: const Icon(
       Icons.email_outlined,
       color: MyColors.defaultIconColor,
@@ -66,7 +67,7 @@ BlocBuilder registerPasswordField(
       textEditingController: passwordController,
       validator: (String? val) {
         if (val!.length < 6) {
-          return 'password must be more than 6 characters';
+          return 'يجب أن تكون كلمة المرور 6 رموز على الأقل';
         }
         return null;
       },
@@ -100,12 +101,14 @@ registerRegisterButton(GlobalKey<FormState> formKey, context,
   return BlocConsumer<RegisterCubit, RegisterState>(
     listener: (context, state) {
       if (state is AddUserToFirestoreSuccessState) {
+        FirebaseAuth.instance.currentUser?.sendEmailVerification();
         Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, emailVerificationRoute);
       }
     },
     builder: (context, state) {
       return ConditionalBuilder(
-        successWidget:(context)=> DefaultButton(
+        successWidget: (context) => DefaultButton(
           label: 'إنشاء حساب',
           onPressed: () {
             if (formKey.currentState!.validate()) {
@@ -119,7 +122,8 @@ registerRegisterButton(GlobalKey<FormState> formKey, context,
             }
           },
         ),
-        fallbackWidget: (context)=>const Center(child: CircularProgressIndicator()),
+        fallbackWidget: (context) =>
+            const Center(child: CircularProgressIndicator()),
         condition: state is! RegisterUserLoadingState &&
             state is! AddUserToFirestoreLoadingState,
       );

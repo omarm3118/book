@@ -48,7 +48,8 @@ class AboutGroupScreen extends StatelessWidget {
                 Text(
                   "الأعضاء +${group.members!.length.toString()}",
                   style: Theme.of(context).textTheme.labelLarge,
-                ),const SizedBox(
+                ),
+                const SizedBox(
                   height: 20,
                 ),
                 Text(

@@ -61,7 +61,7 @@ class CreateGroupScreen extends StatelessWidget {
 
   Text title(BuildContext context) {
     return Text(
-      "إنشاء مجموعة جديدة",
+      "إنشاء فريق جديدة",
       style: Theme.of(context).textTheme.headlineSmall,
     );
   }
@@ -72,7 +72,8 @@ class CreateGroupScreen extends StatelessWidget {
       children: [
         CircleAvatar(
             radius: 52,
-            backgroundColor: MyColors.defaultPurple.withOpacity(0.6),//Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: MyColors.defaultPurple.withOpacity(0.6),
+            //Theme.of(context).scaffoldBackgroundColor,
             child: CircleAvatar(
               radius: 50,
               backgroundImage: cubit.groupImage.path == ''
@@ -115,10 +116,10 @@ class CreateGroupScreen extends StatelessWidget {
         children: [
           DefaultTextFormField(
             validator: (String? value) {
-              return value!.isEmpty ? 'يجب أن تحتوي المجموعة على اسم' : null;
+              return value!.isEmpty ? 'يجب أن يحتوي الفريق على اسم' : null;
             },
             textEditingController: groupNameController,
-            label: 'اسم المجموعة',
+            label: 'اسم الفريق',
             preIcon: null,
             textInputAction: TextInputAction.next,
           ),
@@ -127,10 +128,10 @@ class CreateGroupScreen extends StatelessWidget {
           ),
           DefaultTextFormField(
             validator: (String? value) {
-              return value!.isEmpty ? 'يجب أن تحتوي المجموعة على أهداف' : null;
+              return value!.isEmpty ? 'يجب أن يحتوي الفريق على وصف' : null;
             },
             textEditingController: bioController,
-            label: 'أهداف المجموعة',
+            label: 'عن الفريق',
             preIcon: null,
             textInputAction: TextInputAction.done,
           ),
@@ -139,25 +140,33 @@ class CreateGroupScreen extends StatelessWidget {
     );
   }
 
-  BlocBuilder createButton(GroupsCubit cubit) {
-    return BlocBuilder<GroupsCubit, GroupsState>(builder: (context, state) {
-      return ConditionalBuilder(
-        successWidget: (_) => DefaultButton(
-            label: 'إنشاء المجموعة',
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                cubit.createGroup(
-                  user: user,
-                  groupName: groupNameController.text,
-                  groupBio: bioController.text,
-                );
-              }
-            }),
-        fallbackWidget: (_) => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        condition: state is! CreateGroupLoadingState,
-      );
-    });
+  BlocConsumer<GroupsCubit, GroupsState> createButton(GroupsCubit cubit) {
+    return BlocConsumer<GroupsCubit, GroupsState>(
+      builder: (context, state) {
+        return ConditionalBuilder(
+          successWidget: (_) => DefaultButton(
+              label: 'إنشاء الفريق',
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  cubit.createGroup(
+                    user: user,
+                    groupName: groupNameController.text,
+                    groupBio: bioController.text,
+                  );
+                }
+              }),
+          fallbackWidget: (_) => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          condition: state is! CreateGroupLoadingState,
+        );
+      },
+      listener: (context, state) {
+        if (state is CreateGroupSuccessState) {
+          cubit.getAllGroups();
+          Navigator.pop(context);
+        }
+      },
+    );
   }
 }

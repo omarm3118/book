@@ -2,7 +2,6 @@ class UserModel {
   String email = '';
   String name = '';
   String lastName = '';
-  String password = '';
   String uId = '';
   String phone = '';
   bool isEmailVerified = false;
@@ -13,6 +12,14 @@ class UserModel {
   List groups = const [];
   List favoriteFields = const [];
   bool isAdmin = false;
+  int? numberOfBooksRead = 0;
+  int? numberOfPagesRead = 0;
+  int? numberOfQuotes = 0;
+  int? numberOfPagesToday = 0;
+String? lastOpenBook;
+  List? books = [];
+  List? savedPosts = [];
+  List<BookMarks>? bookMarks = [];
 
   UserModel({
     //=> Todo when I'm register new user I will use this method to store user data then use this data in toJson method
@@ -21,7 +28,6 @@ class UserModel {
     required this.lastName,
     required this.uId,
     required this.isEmailVerified,
-    required this.password,
     required this.phone,
     this.image =
         'https://firebasestorage.googleapis.com/v0/b/test-e854f.appspot.com/o/Images%2FuserImage%2Fman.png?alt=media&token=4a9543eb-6780-4148-96d9-5892f12864e5',
@@ -42,7 +48,6 @@ class UserModel {
     lastName = json['lastName'];
     uId = json['uId'];
     phone = json['phone'];
-    password = json['password'];
     isEmailVerified = json['isEmailVerified'];
     image = json['image'];
     bio = json['bio'];
@@ -51,6 +56,14 @@ class UserModel {
     groups = json['groups'];
     favoriteFields = json['favoriteFields'];
     isAdmin = json['isAdmin'];
+    books = json['books'];
+    savedPosts = json['savedPosts'];
+    lastOpenBook = json['lastOpenBook'];
+
+    numberOfBooksRead = json['numberOfBooksRead'] ?? 0;
+    numberOfPagesRead = json['numberOfPagesRead'] ?? 0;
+    numberOfQuotes = json['numberOfQuotes'] ?? 0;
+    numberOfPagesToday = json['numberOfPagesToday'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -61,7 +74,6 @@ class UserModel {
       'name': name,
       'lastName': lastName,
       'phone': phone,
-      'password': password,
       'isEmailVerified': isEmailVerified,
       'cover': cover,
       'image': image,
@@ -70,6 +82,12 @@ class UserModel {
       'groups': groups,
       'favoriteFields': favoriteFields,
       'isAdmin': isAdmin,
+      'books': books,
+      'numberOfBooksRead': 0,
+      'numberOfPagesRead': 0,
+      'numberOfQuotes': 0,
+      'numberOfPagesToday': 0,
+      'lastOpenBook': lastOpenBook,
     };
   }
 }
@@ -79,7 +97,7 @@ class BookMarks {
   late String bookId;
   late int pageNumber;
   late int allPageNumber;
-
+BookMarks();
   BookMarks.fromJson({required Map<String, dynamic> json}) {
     bookName = json['bookName'];
     bookId = json['bookId'];

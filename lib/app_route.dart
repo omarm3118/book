@@ -5,16 +5,24 @@ import 'package:book/ui/screens/about_group/about_group_screen.dart';
 import 'package:book/ui/screens/book_details/book_details_screen.dart';
 import 'package:book/ui/screens/choose_favorite_fields/choose_favorite_fields_screen.dart';
 import 'package:book/ui/screens/choose_favorite_fields/controller/choose_favorite_fields_cubit.dart';
+import 'package:book/ui/screens/comments/comment_screen.dart';
 import 'package:book/ui/screens/course_details/course_details_screen.dart';
 import 'package:book/ui/screens/create_group_screen/create_group_screen.dart';
+import 'package:book/ui/screens/create_new_post/create_new_post_screen.dart';
 import 'package:book/ui/screens/culture_courses/controller/culture_courses_cubit.dart';
+import 'package:book/ui/screens/email_verification/email_verification_screen.dart';
 import 'package:book/ui/screens/feed/feed_screen.dart';
 import 'package:book/ui/screens/log_in/controller/login_cubit.dart';
 import 'package:book/ui/screens/log_in/login_screen.dart';
 import 'package:book/ui/screens/my_groups/controller/groups_cubit.dart';
 import 'package:book/ui/screens/my_groups/my_groups_screen.dart';
+import 'package:book/ui/screens/on_boarding/on_boarding_screen.dart';
+import 'package:book/ui/screens/polls/polls_screen.dart';
 import 'package:book/ui/screens/register/controller/register_cubit.dart';
 import 'package:book/ui/screens/show_all_books/show_all_books_screen.dart';
+import 'package:book/ui/screens/show_group_users/show_group_users_screen.dart';
+import 'package:book/ui/screens/user_details/user_details_screen.dart';
+import 'package:book/ui/screens/user_edit_info/user_edit_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,9 +40,6 @@ class AppRoute {
   late final FirebaseFirestoreRepository _firebaseFirestoreRepository;
   late final FirebaseStorageRepository _firebaseStorageRepository;
 
-  final LayoutCubit layoutCubit =
-      LayoutCubit(firebaseFirestoreRepository: FirebaseFirestoreRepository());
-
   AppRoute()
       : _firebaseAuthRepositories = FirebaseAuthRepository(),
         _firebaseFirestoreRepository = FirebaseFirestoreRepository(),
@@ -48,6 +53,10 @@ class AppRoute {
       //Todo ReCorrect screens
       case loginRoute:
         return _loginScreen();
+      case emailVerificationRoute:
+        return _emailVerificationScreen();
+      case onBoardingRoute:
+        return _onBoarding();
       case registerRoute:
         return _registerScreen();
       case chooseFavoriteFieldsRoute:
@@ -73,6 +82,7 @@ class AppRoute {
           args['url'],
           args['bookName'],
           args['context'],
+          args['book'],
         );
       case bookDetailsRoute:
         Map args = settings.arguments as Map;
@@ -90,7 +100,32 @@ class AppRoute {
         return _aboutGroupScreen(args['group']);
       case feedRoute:
         Map args = settings.arguments as Map;
-        return _feedScreen(args['context'],args['group']);
+        return _feedScreen(args['context'], args['group']);
+      case newPostRoute:
+        Map args = settings.arguments as Map;
+        return _newPostScreen(args['context'], args['group']);
+      case userDetailsRoute:
+        Map args = settings.arguments as Map;
+        return _userDetailsScreen(args['user'], args['heroId']);
+      case userEditInfoRoute:
+        Map args = settings.arguments as Map;
+        return _userEditInfoScreen(
+            args['user'], args['heroId'], args['context']);
+      case pollsRoute:
+        Map args = settings.arguments as Map;
+
+        return _pollsScreen(args['context'], args['groupId']);
+      case showGroupUsersRoute:
+        Map args = settings.arguments as Map;
+        return _showGroupUsersScreen(args['users']);
+      case commentRoute:
+        Map args = settings.arguments as Map;
+        return _commentScreen(
+          args['context'],
+          args['post'],
+          args['groupId'],
+          args['userId'],
+        );
     }
     return null;
   }
@@ -101,11 +136,29 @@ class AppRoute {
         textDirection: TextDirection.rtl,
         child: BlocProvider(
           create: (BuildContext context) => LoginCubit(
-            firebaseAuthRepositories: _firebaseAuthRepositories,
+            firebaseAuthRepositories: FirebaseAuthRepository(),
           ),
           //Todo Login
           child: LoginScreen(),
         ),
+      ),
+    );
+  }
+
+  Route? _emailVerificationScreen() {
+    return MaterialPageRoute(
+      builder: (_) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: EmailVerificationScreen(),
+      ),
+    );
+  }
+
+  Route? _onBoarding() {
+    return MaterialPageRoute(
+      builder: (_) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: OnBoardingScreen(),
       ),
     );
   }
@@ -130,9 +183,12 @@ class AppRoute {
       builder: (context) => Directionality(
         textDirection: TextDirection.rtl,
         child: BlocProvider(
-          create: (context) => layoutCubit
+          create: (context) => LayoutCubit(
+              firebaseFirestoreRepository: FirebaseFirestoreRepository(),
+              firebaseStorageRepository: FirebaseStorageRepository())
             ..getUserInfo()
-            ..getBooks(),
+            ..getBooks()
+            ..getAllUsers(),
           child: const LayoutScreen(),
         ),
       ),
@@ -143,7 +199,8 @@ class AppRoute {
     return MaterialPageRoute(
       builder: (context) => BlocProvider(
         create: (context) => ChooseFavoriteFieldsCubit(
-            firebaseFirestoreRepository: _firebaseFirestoreRepository),
+          firebaseFirestoreRepository: _firebaseFirestoreRepository,
+        ),
         child: const Directionality(
           textDirection: TextDirection.rtl,
           child: ChooseFavoriteFieldsScreen(),
@@ -215,7 +272,8 @@ class AppRoute {
     );
   }
 
-  Route? _pdfViewerScreen(String bookId, String url, String bookName, context) {
+  Route? _pdfViewerScreen(
+      String bookId, String url, String bookName, context, book) {
     return MaterialPageRoute(
       builder: (_) => Directionality(
         textDirection: TextDirection.rtl,
@@ -225,6 +283,7 @@ class AppRoute {
             url: url,
             bookName: bookName,
             bookId: bookId,
+            myBook: book,
           ),
         ),
       ),
@@ -285,13 +344,97 @@ class AppRoute {
     );
   }
 
-  Route? _feedScreen(context,group) {
+  Route? _feedScreen(context, group) {
     return MaterialPageRoute(
       builder: (_) => Directionality(
         textDirection: TextDirection.rtl,
         child: BlocProvider.value(
           value: BlocProvider.of<GroupsCubit>(context),
-          child:  FeedScreen(group: group,),
+          child: FeedScreen(
+            group: group,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Route? _newPostScreen(context, group) {
+    return MaterialPageRoute(
+      builder: (_) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: BlocProvider.value(
+          value: BlocProvider.of<GroupsCubit>(context),
+          child: CreateNewPost(
+            group: group,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Route? _commentScreen(context, post, groupId, userId) {
+    return MaterialPageRoute(
+      builder: (_) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: BlocProvider.value(
+          value: BlocProvider.of<GroupsCubit>(context),
+          child: CommentScreen(
+            post: post,
+            groupId: groupId,
+            userId: userId,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Route? _userDetailsScreen(user, commentId) {
+    return MaterialPageRoute(
+      builder: (_) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: UserDetailsScreen(
+          user: user,
+          heroId: commentId,
+        ),
+      ),
+    );
+  }
+
+  Route? _userEditInfoScreen(user, commentId, context) {
+    return MaterialPageRoute(
+      builder: (_) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: BlocProvider.value(
+          value: BlocProvider.of<LayoutCubit>(context),
+          child: UserEditInfoScreen(
+            user: user,
+            heroId: commentId,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Route? _pollsScreen(context, String groupId) {
+    return MaterialPageRoute(
+      builder: (_) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: BlocProvider.value(
+          value: BlocProvider.of<GroupsCubit>(context),
+          child: PollsScreen(
+            groupId: groupId,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Route? _showGroupUsersScreen(users) {
+    return MaterialPageRoute(
+      builder: (_) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: ShowGroupUsersScreen(
+          users: users,
         ),
       ),
     );

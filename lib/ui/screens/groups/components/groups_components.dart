@@ -27,8 +27,9 @@ ListView itemsBuilder(List<GroupModel> groups, userId) {
     shrinkWrap: true,
     itemBuilder: (BuildContext context, int index) =>
         itemField(context, groups[index], userId),
-    separatorBuilder: (BuildContext context, int index) =>
-        const Divider(height: 18),
+    separatorBuilder: (BuildContext context, int index) => const Divider(
+      height: 18,
+    ),
     itemCount: groups.length,
   );
 }
@@ -83,10 +84,12 @@ InkWell itemField(BuildContext context, GroupModel group, userId) {
                 primary: !group.inIt ? Colors.white : MyColors.defaultPurple,
                 surfaceTintColor: Colors.white,
               ),
-              onPressed: () {
+              onPressed: () async {
                 if (!group.inIt) {
+                  await
                   BlocProvider.of<GroupsCubit>(context)
                       .addToGroup(groupId: group.id!, userId: userId);
+                  BlocProvider.of<GroupsCubit>(context).getAllGroups();
                 }
               },
               child: group.inIt

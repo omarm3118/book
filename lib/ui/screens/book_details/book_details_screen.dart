@@ -11,6 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import '../../../data/models/user_model.dart';
+
 class BookDetailsScreen extends StatelessWidget {
   final BookModel book;
 
@@ -158,6 +160,7 @@ class BookDetailsScreen extends StatelessWidget {
                                                 'url': book.pdfLink,
                                                 'bookName': book.name,
                                                 'context': context,
+                                                'book': book
                                               },
                                             );
                                           },
@@ -344,6 +347,18 @@ class BookDetailsScreen extends StatelessWidget {
   }
 
   commentItem(BuildContext context, BookReview review) {
+    UserModel user = LayoutCubit.allUsers!.firstWhere(
+      (element) => element.uId == review.userId,
+      orElse: () => UserModel(
+        email: 'email',
+        name: 'name',
+        lastName: 'lastName',
+        uId: 'uId',
+        isEmailVerified: false,
+        phone: 'phone',
+      ),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -357,6 +372,10 @@ class BookDetailsScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: Color(0xffD1CDE9),
               ),
+              child: CachedNetworkImage(
+                imageUrl: user.image,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(
               width: 6,
@@ -366,7 +385,7 @@ class BookDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${LayoutCubit.getUser?.name.toString()}',
+                  user.name,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.w500,

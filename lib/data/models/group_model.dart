@@ -17,7 +17,7 @@ class GroupModel {
     required this.groupBio,
    required this.id,
     this.groupImage =
-        'https://img.freepik.com/free-vector/hand-drawn-stack-books-illustration_23-2149352488.jpg?w=740&t=st=1654459191~exp=1654459791~hmac=38b19db22859028b8e1a3bdf4d5da32e9002cccd5188c0a19fc71b8302402e70',
+        'https://img.freepik.com/free-vector/hand-drawn-book-club-illustration_23-2149381723.jpg?w=740',
     this.members,
     required this.admins,
     required this.createdBy,

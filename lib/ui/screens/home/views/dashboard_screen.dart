@@ -1,9 +1,14 @@
 import 'package:book/constants/colors.dart';
+import 'package:book/data/models/book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../constants/strings.dart';
+import '../../../../data/models/user_model.dart';
+import '../../../widgets/conditional_builder.dart';
 import '../components/dashboard_components.dart';
+import '../controller/layout_cubit.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -56,6 +61,15 @@ class DashboardScreen extends StatelessWidget {
 
   SliverAppBar sliverAppBar(BuildContext context) {
     return SliverAppBar(
+      leading: IconButton(
+        icon: Icon(
+          Icons.menu,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
+      ),
       backgroundColor: MyColors.defaultBackgroundPurple,
       snap: true,
       floating: true,
@@ -76,7 +90,9 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Container header(BuildContext context) {
+  BlocBuilder header(BuildContext context) {
+    return BlocBuilder<LayoutCubit, LayoutState>(
+  builder: (context, state) {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -110,50 +126,107 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
     );
+  },
+);
   }
 
   body(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          bodyTitle(context),
-          const SizedBox(
-            height: 8,
-          ),
-          bookProgressCard(context),
-          GridView.count(
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(top: 5),
-            childAspectRatio: 4 / 3,
-            shrinkWrap: true,
-            crossAxisCount: 2,
+    return BlocBuilder<LayoutCubit, LayoutState>(
+      builder: (context, state) {
+        LayoutCubit cubit = BlocProvider.of<LayoutCubit>(context);
+        // List<BookModel> userBooks = [];
+        BookModel? lastBook;
+        BookMarks? bookMarks;
+        UserModel? user = LayoutCubit.getUser;
+        if (user!.books != null) {
+          cubit.books.where(
+            (element) {
+              if (element.id == user.lastOpenBook &&
+                  user.books!.contains(element.id)) {
+                lastBook = element;
+              }
+              return user.books!.contains(element.id);
+            },
+          ).toList();
+
+          if (user.bookMarks != null) {
+            for (var element in user.bookMarks!) {
+              if (element.bookId == lastBook?.id) {
+                bookMarks = element;
+                lastBook?.firstPage = bookMarks.pageNumber;
+                lastBook?.totalPages = bookMarks.allPageNumber;
+                break;
+              }
+            }
+          }
+        }
+        return Padding(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              readerProgressInfo(context,
-                  label: 'عدد الكتب التي قرأتها',
-                  number: '20',
-                  path: 'assets/images/first.png'),
-              readerProgressInfo(context,
-                  label: 'عدد الصفحات التي قرأتها',
-                  number: '15000',
-                  path: 'assets/images/se.png'),
-              readerProgressInfo(context,
-                  label: 'عدد الأطروحات المكتوبة',
-                  number: '80',
-                  path: 'assets/images/th.png'),
-              readerProgressInfo(context,
-                  label: 'عدد الصفحات المنجزة اليوم',
-                  number: '120',
-                  path: 'assets/images/fo.png'),
+              if (user.books!.isNotEmpty) bodyTitle(context),
+              const SizedBox(
+                height: 8,
+              ),
+              if (user.books!.isNotEmpty && lastBook != null)
+                bookProgressCard(
+                  context,
+                  bookName: lastBook!.name!,
+                  readingPages: lastBook!.firstPage,
+                  totalPages: lastBook!.totalPages,
+                  bookImage: lastBook!.imageLink!,
+                  book: lastBook!,
+                ),
+              ConditionalBuilder(
+                successWidget: (_) => GridView.count(
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.only(top: 5),
+                  childAspectRatio: 4 / 3,
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  children: [
+                    readerProgressInfo(
+                      context,
+                      label: 'عدد الكتب التي قرأتها',
+                      number: LayoutCubit.getUser!.numberOfBooksRead!,
+                      path: 'assets/images/first.png',
+                      trackName: 'numberOfBooksRead',
+                    ),
+                    readerProgressInfo(
+                      context,
+                      label: 'عدد الصفحات التي قرأتها',
+                      number: LayoutCubit.getUser!.numberOfPagesRead!,
+                      path: 'assets/images/se.png',
+                      trackName: 'numberOfPagesRead',
+                    ),
+                    readerProgressInfo(
+                      context,
+                      label: 'عدد الأطروحات المكتوبة',
+                      number: LayoutCubit.getUser!.numberOfQuotes!,
+                      path: 'assets/images/th.png',
+                      trackName: 'numberOfQuotes',
+                    ),
+                    readerProgressInfo(
+                      context,
+                      label: 'عدد الصفحات المنجزة اليوم',
+                      number: LayoutCubit.getUser!.numberOfPagesToday!,
+                      path: 'assets/images/fo.png',
+                      trackName: 'numberOfPagesToday',
+                      secondNumber:LayoutCubit.getUser!.numberOfPagesRead,
+                    ),
+                  ],
+                ),
+                fallbackWidget: (_) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                condition: LayoutCubit.getUser != null,
+              ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
-
-
-
 }

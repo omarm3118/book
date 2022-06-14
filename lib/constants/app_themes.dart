@@ -46,10 +46,10 @@ class MyThemes {
           ),
         ),
 
-        navigationBarTheme: NavigationBarThemeData(
-          indicatorColor: Colors.indigo.withOpacity(0.5),
+        navigationBarTheme: const NavigationBarThemeData(
+          indicatorColor: Color(0x74e3e0e0),
           height: 50,
-          backgroundColor: Colors.white,
+          backgroundColor:Colors.white,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         ),
       );

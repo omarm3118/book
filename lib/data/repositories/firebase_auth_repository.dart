@@ -20,7 +20,6 @@ class FirebaseAuthRepository {
       name: name,
       uId: userCredential.user!.uid,
       isEmailVerified: userCredential.user!.emailVerified,
-      password: password,
       phone: userCredential.user!.phoneNumber ?? '',
       lastName: lastName,
     );

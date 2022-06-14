@@ -14,13 +14,13 @@ DefaultTextFormField loginEmailField({
   return DefaultTextFormField(
     validator: (String? val) {
       if (val!.isEmpty) {
-        return 'email must not be empty';
+        return 'أدخل البريد الإلكتروني';
       }
       return null;
     },
     textEditingController: emailController,
     textInputAction: TextInputAction.next,
-    label: 'اسم المستخدم',
+    label: 'البريد الإلكتروني',
     preIcon: const Icon(
       Icons.email_outlined,
       color: MyColors.defaultIconColor,
@@ -29,37 +29,37 @@ DefaultTextFormField loginEmailField({
   );
 }
 
-BlocBuilder loginPasswordField(context, {
+BlocBuilder loginPasswordField(
+  context, {
   required TextEditingController passwordController,
 }) {
   LoginCubit cubit = LoginCubit.getCubit(context);
   return BlocBuilder<LoginCubit, LoginState>(
-    builder: (context, state) =>
-        DefaultTextFormField(
-          validator: (String? val) {
-            if (val!.length < 6) {
-              return 'password must be more than 6 characters';
-            }
-            return null;
+    builder: (context, state) => DefaultTextFormField(
+      validator: (String? val) {
+        if (val!.length < 6) {
+          return 'يجب أن تكون كلمة المرور 6 رموز على الأقل';
+        }
+        return null;
+      },
+      textEditingController: passwordController,
+      textInputAction: TextInputAction.done,
+      label: 'كلمة المرور',
+      preIcon: const Icon(
+        Icons.lock_outline,
+        color: MyColors.defaultIconColor,
+      ),
+      suffixIcon: IconButton(
+          color: MyColors.defaultIconColor,
+          onPressed: () {
+            cubit.changePasswordVisibility();
           },
-          textEditingController: passwordController,
-          textInputAction: TextInputAction.done,
-          label: 'كلمة المرور',
-          preIcon: const Icon(
-            Icons.lock_outline,
-            color: MyColors.defaultIconColor,
-          ),
-          suffixIcon: IconButton(
-              color: MyColors.defaultIconColor,
-              onPressed: () {
-                cubit.changePasswordVisibility();
-              },
-              icon: Icon(!cubit.isSecure
-                  ? Icons.visibility_outlined
-                  : Icons.visibility_off_outlined)),
-          isPassword: cubit.isSecure,
-          keyboardType: TextInputType.visiblePassword,
-        ),
+          icon: Icon(!cubit.isSecure
+              ? Icons.visibility_outlined
+              : Icons.visibility_off_outlined)),
+      isPassword: cubit.isSecure,
+      keyboardType: TextInputType.visiblePassword,
+    ),
   );
 }
 
@@ -76,17 +76,16 @@ Container loginForgetPasswordButton(BuildContext context) {
       ),
       onPressed: () {},
       child: Text(
-        "هل نسيت كلمة المرور؟",
-        style: Theme
-            .of(context)
-            .textTheme
-            .labelLarge,
+        //Todo هل نسيت كلمة المرور؟
+        "",
+        style: Theme.of(context).textTheme.labelLarge,
       ),
     ),
   );
 }
 
-BlocConsumer loginSignInButton(GlobalKey<FormState> formKey, {
+BlocConsumer loginSignInButton(
+  GlobalKey<FormState> formKey, {
   required BuildContext context,
   required TextEditingController email,
   required TextEditingController password,
@@ -95,12 +94,15 @@ BlocConsumer loginSignInButton(GlobalKey<FormState> formKey, {
   return BlocConsumer<LoginCubit, LoginState>(
     listener: (context, state) {
       if (state is SignInUserSuccessState) {
-        Navigator.pushReplacementNamed(context, homeRoute);
+        Navigator.pushReplacementNamed(
+          context,
+          homeRoute,
+        );
       }
     },
     builder: (context, state) {
       return ConditionalBuilder(
-        successWidget:(context)=> DefaultButton(
+        successWidget: (context) => DefaultButton(
           label: 'تسجيل الدخول',
           onPressed: () {
             if (formKey.currentState!.validate()) {
@@ -108,9 +110,9 @@ BlocConsumer loginSignInButton(GlobalKey<FormState> formKey, {
             }
           },
         ),
-        fallbackWidget:(context)=> const Center(child: CircularProgressIndicator()),
-        condition:
-        (state is! SignInUserLoadingState),
+        fallbackWidget: (context) =>
+            const Center(child: CircularProgressIndicator()),
+        condition: (state is! SignInUserLoadingState),
       );
     },
   );
@@ -122,19 +124,15 @@ Row loginRegisterButton(BuildContext context) {
     children: [
       Text(
         'ليس لديك حساب؟',
-        style: Theme
-            .of(context)
-            .textTheme
-            .labelLarge,
+        style: Theme.of(context).textTheme.labelLarge,
       ),
       TextButton(
         onPressed: () {
           Navigator.pushNamed(context, registerRoute);
         },
         child: Text(
-          "سجّل الآن",
-          style: Theme
-              .of(context)
+          "أنشئ الآن",
+          style: Theme.of(context)
               .textTheme
               .labelLarge!
               .copyWith(color: MyColors.defaultPurple),

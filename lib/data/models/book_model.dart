@@ -9,7 +9,9 @@ class BookModel {
   String? pdfLink;
   double bookRate = 0;
   List<BookReview> bookReviews = [];
-
+  int firstPage = 0;
+  int totalPages = 1;
+BookModel();
   BookModel.fromJson({
     required Map<String, dynamic> json,
   }) {
@@ -19,7 +21,7 @@ class BookModel {
     id = json['id'];
     imageLink = json['bookImageLink'];
     pdfLink = json['bookPdfLink'];
-     bookRate = json['bookRate'] ?? 0;
+    bookRate = json['bookRate'] ?? 0;
   }
 }
 

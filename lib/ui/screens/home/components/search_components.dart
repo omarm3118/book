@@ -4,6 +4,7 @@ import 'package:book/data/models/book_model.dart';
 import 'package:book/ui/screens/home/controller/layout_cubit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../widgets/my_search_delegate.dart';
 
@@ -42,7 +43,10 @@ Card searchBar(context, LayoutCubit cubit, searchController) {
                             Navigator.pop(context);
                           },
                           icon: const Icon(Icons.clear)))
-                  : const Icon(Icons.search),
+                  : SvgPicture.asset(
+                      'assets/icon_svgs/icon_search.svg',
+                      color: MyColors.defaultIconColor,
+                    ),
             ],
           ),
         ),
@@ -77,32 +81,38 @@ Container firstTitle(BuildContext context) {
   );
 }
 
-Row secondTitle(BuildContext context, books) {
+Row secondTitle({
+  required BuildContext context,
+  required List<BookModel> books,
+  required String title,
+  required bool hasShowMore,
+}) {
   return Row(
     children: [
       Text(
-        'المقترحات',
+        title,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
               fontSize: 20,
             ),
       ),
       const Spacer(),
-      TextButton(
-        onPressed: () {
-          Navigator.pushNamed(context, showAllBooksRoute, arguments: {
-            'books': books,
-            'context': context,
-          });
-        },
-        child: Text(
-          'رؤية المزيد',
-          style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                fontSize: 14,
-                color: const Color(0xff808080),
-                fontWeight: FontWeight.normal,
-              ),
+      if (hasShowMore)
+        TextButton(
+          onPressed: () {
+            Navigator.pushNamed(context, showAllBooksRoute, arguments: {
+              'books': books,
+              'context': context,
+            });
+          },
+          child: Text(
+            'رؤية المزيد',
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  fontSize: 14,
+                  color: const Color(0xff808080),
+                  fontWeight: FontWeight.normal,
+                ),
+          ),
         ),
-      ),
     ],
   );
 }
@@ -169,7 +179,6 @@ SizedBox suggestions(List books, {Axis scrollDirection = Axis.horizontal}) {
 InkWell bookCard({required context, required BookModel book}) {
   return InkWell(
     onTap: () {
-      print(book.bookReviews);
       Navigator.pushNamed(
         context,
         bookDetailsRoute,
