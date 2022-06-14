@@ -23,7 +23,7 @@ class ShowGroupUsersScreen extends StatelessWidget {
               context,
               userDetailsRoute,
               arguments: {
-                'user': groupUsers![index],
+                'user': groupUsers[index],
                 'heroId': groupUsers[index].uId,
               },
             );
