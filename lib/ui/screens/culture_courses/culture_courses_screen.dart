@@ -27,7 +27,6 @@ class CultureCoursesScreen extends StatelessWidget {
             right: defaultPadding,
             left: defaultPadding,
             top: 85,
-            bottom: defaultPadding,
           ),
           child: Center(
             child: Column(
@@ -39,7 +38,6 @@ class CultureCoursesScreen extends StatelessWidget {
                 ),
                 //Todo convert Icon when press
                 Expanded(
-                  flex: 10,
                   child: BlocBuilder<CultureCoursesCubit, CultureCoursesState>(
                     builder: (context, state) {
                       return ConditionalBuilder(
@@ -56,6 +54,8 @@ class CultureCoursesScreen extends StatelessWidget {
                     },
                   ),
                 ),
+
+
                 // const Spacer(),
                 // nextButton(context)
               ],

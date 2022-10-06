@@ -52,11 +52,12 @@ class FeedPostComponents extends StatelessWidget {
         return ConditionalBuilder(
           successWidget: (_) => ConditionalBuilder(
             successWidget: (_) => ListView.separated(
+
               itemBuilder: (context, index) => _postItemBuilder(
                 context,
                 isSearch ? searches[index] : cubit.posts[index],
                 cubit,
-                (state is SavePostLoadingState),
+                ((state is SavePostLoadingState)&&(state.postId==cubit.posts[index].postId)),
               ),
               separatorBuilder: (context, index) => const SizedBox(
                 height: 5,
@@ -191,6 +192,9 @@ class FeedPostComponents extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               if (isSaveLoading)
+
+
+
                 const CircularProgressIndicator(
                   backgroundColor: Colors.transparent,
                 ),
@@ -222,8 +226,8 @@ class FeedPostComponents extends StatelessWidget {
         cubit.changeImageFit(post);
       },
       child: Container(
-        width: post.fitting == BoxFit.contain ? null : 347,
-        height: post.fitting == BoxFit.contain ? null : 193,
+        width: 347,
+        height:193,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.5),

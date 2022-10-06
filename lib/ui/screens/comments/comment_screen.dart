@@ -96,7 +96,7 @@ class CommentScreen extends StatelessWidget {
                             controller: _textController,
                             decoration: const InputDecoration(
                               border: InputBorder.none,
-                              hintText: 'أرسل تعلقيك ليصل إالى العالم...',
+                              hintText: 'أرسل تعلقيك ليصل إلى العالم...',
                             ),
                             style: const TextStyle(fontSize: 13),
                           ),
@@ -146,6 +146,7 @@ class CommentScreen extends StatelessWidget {
                     child: Container(
                       width: 40,
                       height: 40,
+                      clipBehavior: Clip.antiAlias,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0xffD1CDE9),

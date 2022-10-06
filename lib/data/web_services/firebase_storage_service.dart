@@ -49,17 +49,6 @@ class FirebaseStorageService {
     return null;
   }
 
-  firebaseUploadUserImage(
-      {required File userImage, required String userId}) async {
-    try {
-      TaskSnapshot ref =
-          await storage.ref('userImage').child(userId).putFile(userImage);
-      return await ref.ref.getDownloadURL();
-    } catch (e) {
-      showingToast(msg: e.toString(), state: ToastState.error);
-    }
-    return null;
-  }
 
   firebaseUploadUserPhoto({required File userImage, required userid}) async {
     try {

@@ -28,7 +28,7 @@ class UserEditInfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     LayoutCubit cubit = LayoutCubit.getCubit(context);
     List<BookModel> books = LayoutCubit.booksStatic.where(
-          (element) {
+      (element) {
         if (user.books != null) {
           return user.books!.contains(element.id);
         }
@@ -40,16 +40,18 @@ class UserEditInfoScreen extends StatelessWidget {
       appBar: AppBar(
         systemOverlayStyle: statusBarColor,
         actions: [
-          TextButton(onPressed: () {
-            if (formKey.currentState!.validate()) {
-              cubit.updateUserInfo(
+          TextButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                cubit.updateUserInfo(
                   name: _nameController.text,
-                  bio: _bioController.text);
-            }
-          },
-            child: Text('تأكيد التعديل'),)
+                  bio: _bioController.text,
+                );
+              }
+            },
+            child: Text('تأكيد التعديل'),
+          )
         ],
-
       ),
       body: SafeArea(
         child: BlocBuilder<LayoutCubit, LayoutState>(
@@ -80,23 +82,24 @@ class UserEditInfoScreen extends StatelessWidget {
                                 children: [
                                   cubit.coverImage != null
                                       ? Image.file(
-                                      cubit.coverImage!,
-                                      width: 600,
-                                      height: 600,
-                                      cacheWidth: 600,
-                                      cacheHeight: 600,
-                                      fit: BoxFit.cover
-
-                                  )
+                                          cubit.coverImage!,
+                                          width: 600,
+                                          height: 600,
+                                          cacheWidth: 600,
+                                          cacheHeight: 600,
+                                          fit: BoxFit.cover,
+                                        )
                                       : CachedNetworkImage(
-                                    imageUrl: user.cover,
-                                    maxHeightDiskCache: 800,
-                                    maxWidthDiskCache: 800,
-                                    fit: BoxFit.cover,
-                                  ),
+                                          imageUrl: user.cover,
+                                          maxHeightDiskCache: 800,
+                                          maxWidthDiskCache: 800,
+                                    width: 600,
+                                    height: 600,
+                                          fit: BoxFit.cover,
+                                        ),
                                   CircleAvatar(
-                                    backgroundColor: Colors.white.withOpacity(
-                                        0.5),
+                                    backgroundColor:
+                                        Colors.white.withOpacity(0.5),
                                     foregroundColor: MyColors.defaultPurple,
                                     child: IconButton(
                                       onPressed: () {
@@ -116,32 +119,45 @@ class UserEditInfoScreen extends StatelessWidget {
                             child: CircleAvatar(
                               radius: 50,
                               backgroundColor:
-                              Theme
-                                  .of(context)
-                                  .scaffoldBackgroundColor,
+                                  Theme.of(context).scaffoldBackgroundColor,
                               child: CircleAvatar(
-                                backgroundColor: Colors.transparent,
+                                backgroundColor: MyColors.defaultIconColor,
                                 radius: 48,
                                 child: Stack(
                                   children: [
                                     cubit.userImage != null
-                                        ? Image.file(
-                                        cubit.userImage!,
-                                        width: 600,
-                                        height: 600,
-                                        cacheWidth: 600,
-                                        cacheHeight: 600,
-                                        fit: BoxFit.cover
-                                    )
-                                        : CachedNetworkImage(
-                                      maxHeightDiskCache: 600,
-                                      maxWidthDiskCache: 600,
-                                      imageUrl: user.image,
-                                      fit: BoxFit.cover,
-                                    ),
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Image.file(
+                                              cubit.userImage!,
+                                              width: 600,
+                                              height: 600,
+                                              cacheWidth: 600,
+                                              cacheHeight: 600,
+                                              fit: BoxFit.cover,
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                          )
+                                        : Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: CachedNetworkImage(
+                                              width: 600,
+                                              height: 600,
+                                              maxHeightDiskCache: 600,
+                                              maxWidthDiskCache: 600,
+                                              imageUrl: user.image,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
                                     CircleAvatar(
                                       backgroundColor: Colors.white.withOpacity(
-                                          0.5),
+                                        0.5,
+                                      ),
                                       foregroundColor: MyColors.defaultPurple,
                                       child: IconButton(
                                         onPressed: () {
@@ -219,66 +235,57 @@ class UserEditInfoScreen extends StatelessWidget {
                               ..text = user.bio,
                           ),
                           ConditionalBuilder(
-                            successWidget: (_) =>
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      height: 30,
-                                    ),
-                                    Text(
-                                      'الكتب التي اختارها',
-                                      style:
-                                      Theme
-                                          .of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    SizedBox(
-                                      height: 156,
-                                      child: ListView.separated(
-                                        scrollDirection: Axis.horizontal,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) =>
-                                            bookCard(
-                                              context: context,
-                                              book: books[index],
-                                            ),
-                                        itemCount: books.length,
-                                        separatorBuilder:
-                                            (BuildContext context, int index) {
-                                          return const SizedBox(
-                                            width: 8,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                            successWidget: (_) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 30,
                                 ),
-                            fallbackWidget: (_) =>
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Image.asset('assets/images/fo.png'),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      'لم يختر كتبًا بعد ',
-                                      style:
-                                      Theme
-                                          .of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                  ],
+                                Text(
+                                  'الكتب التي اختارها',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
                                 ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                SizedBox(
+                                  height: 156,
+                                  child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) => bookCard(
+                                      context: context,
+                                      book: books[index],
+                                    ),
+                                    itemCount: books.length,
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return const SizedBox(
+                                        width: 8,
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            fallbackWidget: (_) => Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Image.asset('assets/images/fo.png'),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  'لم يختر كتبًا بعد ',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ],
+                            ),
                             condition: books.isNotEmpty,
                           ),
                         ],
@@ -308,8 +315,7 @@ class UserEditInfoScreen extends StatelessWidget {
           fit: BoxFit.cover,
           imageUrl: book.imageLink.toString(),
           errorWidget: (ctx, url, error) => const Icon(Icons.error_outline),
-          placeholder: (ctx, url) =>
-          const Center(
+          placeholder: (ctx, url) => const Center(
             child: CircularProgressIndicator(),
           ),
         ),

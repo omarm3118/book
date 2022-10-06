@@ -8,6 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
+import '../../../constants/strings.dart';
+import '../../../data/repositories/firebase_firestore_repository.dart';
+import '../../../data/repositories/firebase_storage_repository.dart';
+
 class PDFViewerScreen extends StatefulWidget {
   PDFViewerScreen({
     Key? key,
@@ -47,6 +51,8 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     statusBarColor: Colors.white,
     statusBarIconBrightness: Brightness.dark,
   );
+
+  int numberOfPagesReadToday = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -94,10 +100,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
         listener: (context, state) {
           if (state is AddBookMarkSuccessState)
             showingToast(
-              msg: '✔',
-              state: ToastState.checked,
-              isGravityTop: true
-            );
+                msg: '✔', state: ToastState.checked, isGravityTop: true);
         },
         builder: (context, state) {
           LayoutCubit cubit = LayoutCubit.getCubit(context);
@@ -114,7 +117,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                         //  swipeHorizontal: true,
                         pageFling: false,
                         pageSnap: false,
-                        //     nightMode: true,
+                        //    nightMode: true,
                         defaultPage: widget.myBook.firstPage,
                         onRender: (pages) {
                           this.pages = pages!;
@@ -143,14 +146,31 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: MyColors.defaultPurple,
-                        onPrimary: Colors.white,
+                        backgroundColor: MyColors.defaultPurple,
+                        foregroundColor: Colors.white,
                         padding: EdgeInsets.zero,
                         minimumSize: const Size(48, 38),
                       ),
                       onPressed: () async {
                         if (pages > 2) {
-                          cubit.addBookMark(
+                          if (indexPage >= widget.myBook.firstPage) {
+                            numberOfPagesReadToday =
+                                indexPage - widget.myBook.firstPage;
+                          } else {
+                            numberOfPagesReadToday = 0;
+                          }
+
+                          dialogToUpdateTodayReadPages(
+                            context: context,
+                            numberRead: numberOfPagesReadToday,
+                            numberOfPreviousRead:
+                                (LayoutCubit.getUser!.numberOfPagesToday!),
+                            secondNumber:
+                                (LayoutCubit.getUser!.numberOfPagesRead),
+                            trackName: 'numberOfPagesToday',
+                          );
+
+                          await cubit.addBookMark(
                             bookId: widget.bookId,
                             pageNumber: indexPage,
                             allPageNumber: pages,
@@ -162,7 +182,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                         Icons.bookmark_border,
                       ),
                     ),
-                  )
+                  ),
                 ],
               );
             },
@@ -177,4 +197,174 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       ),
     );
   }
+}
+
+Future dialogToUpdateTodayReadPages({
+  required BuildContext context,
+  required int numberRead,
+  required int numberOfPreviousRead,
+  int? secondNumber,
+  required String trackName,
+}) {
+  if (secondNumber != null && secondNumber < 0) {
+    secondNumber = 0;
+  }
+  return showDialog(
+    context: context,
+    builder: (_) {
+      return BlocProvider(
+        create: (ctx) => LayoutCubit(
+          firebaseFirestoreRepository: FirebaseFirestoreRepository(),
+          firebaseStorageRepository: FirebaseStorageRepository(),
+        ),
+        child: BlocConsumer<LayoutCubit, LayoutState>(
+          listener: (context, state) {
+            if (state is UpdateTrackSuccessState) {
+              Navigator.pop(context);
+            }
+          },
+          builder: (context, state) {
+            return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: SizedBox(
+                height: 300,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          height: 130,
+                          width: 250,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(20)),
+                          ),
+                          child: Image.asset(
+                            'assets/images/fo.png',
+                            cacheWidth: 750,
+                            cacheHeight: 390,
+                            width: 750,
+                            height: 390,
+                            fit: BoxFit.scaleDown,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 150,
+                        child: Card(
+                          elevation: 0,
+                          surfaceTintColor: Colors.white,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text('عدد الصفحات التي قرأتها'),
+
+                              const SizedBox(
+                                height: 20,
+                              ),
+
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          defaultRadius,
+                                        ),
+                                      ),
+                                      minimumSize: const Size(50, 50),
+                                      maximumSize: const Size(50, 50),
+                                    ),
+                                    onPressed: () {
+                                      if (numberRead != 0) {
+                                        numberRead--;
+                                        BlocProvider.of<LayoutCubit>(context)
+                                            .changeNumber();
+                                      }
+                                    },
+                                    child: const Text(
+                                      '-',
+                                      style: TextStyle(fontSize: 30),
+                                    ),
+                                  ),
+                                  Text(numberRead.toString()),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          defaultRadius,
+                                        ),
+                                      ),
+                                      minimumSize: const Size(50, 50),
+                                      maximumSize: const Size(50, 50),
+                                    ),
+                                    onPressed: () {
+                                      numberRead++;
+
+                                      BlocProvider.of<LayoutCubit>(context)
+                                          .changeNumber();
+                                    },
+                                    child: const Icon(Icons.add),
+                                  )
+                                ],
+                              ),
+                              const Spacer(),
+                              SizedBox(
+                                width: 320,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: TextButton(
+                                        onPressed: () async {
+                                          await BlocProvider.of<LayoutCubit>(
+                                                  context)
+                                              .updateUserTrack(
+                                            userId: LayoutCubit.getUser!.uId,
+                                            trackName: trackName,
+                                            tracValue: (numberOfPreviousRead +
+                                                numberRead),
+                                            secondTrackName: trackName ==
+                                                    'numberOfPagesToday'
+                                                ? 'numberOfPagesRead'
+                                                : null,
+                                            secondTrackValue: trackName ==
+                                                    'numberOfPagesToday'
+                                                ? (secondNumber! + numberRead)
+                                                : null,
+                                          );
+                                        },
+                                        child: const Text(
+                                          'تأكيد الإنجاز',
+                                        ),
+                                      ),
+                                    ),
+                                    if (state is UpdateTrackLoadingState)
+                                      const RefreshProgressIndicator()
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    },
+  );
 }

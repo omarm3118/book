@@ -96,7 +96,7 @@ buttons(context) {
             });
           },
           child: Text(
-            'إنشاء فريق جديدة',
+            'إنشاء فريق جديد',
             style: Theme.of(context).textTheme.labelLarge!.copyWith(
                   color: MyColors.defaultPurple,
                   fontSize: 14,

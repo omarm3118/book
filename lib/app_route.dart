@@ -1,6 +1,7 @@
 import 'package:book/data/models/book_model.dart';
 import 'package:book/data/repositories/firebase_auth_repository.dart';
 import 'package:book/data/repositories/firebase_firestore_repository.dart';
+import 'package:book/google_map.dart';
 import 'package:book/ui/screens/about_group/about_group_screen.dart';
 import 'package:book/ui/screens/book_details/book_details_screen.dart';
 import 'package:book/ui/screens/choose_favorite_fields/choose_favorite_fields_screen.dart';
@@ -126,6 +127,8 @@ class AppRoute {
           args['groupId'],
           args['userId'],
         );
+      case googleMap:
+        return _googleMap();
     }
     return null;
   }
@@ -150,6 +153,15 @@ class AppRoute {
       builder: (_) => Directionality(
         textDirection: TextDirection.rtl,
         child: EmailVerificationScreen(),
+      ),
+    );
+  }
+
+ Route? _googleMap() {
+    return MaterialPageRoute(
+      builder: (_) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: OrderTrackingPage(),
       ),
     );
   }

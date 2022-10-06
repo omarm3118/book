@@ -20,6 +20,9 @@ const String userEditInfoRoute='UserEditInfoScreen';
 const String pollsRoute='PollsScreen';
 const String emailVerificationRoute='EmailVerificationScreen';
 const String showGroupUsersRoute='ShowGroupUsersScreen';
+const String googleMap='GoogleMap';
+const String googleMapIOS='AIzaSyDCM2llR-aaTJWoXzxssuyIiN7HrQF2WR8';
+const String googleMapAndroid='AIzaSyDi29yYoSJW0KPmfBWG05NGQzDJ312E1h8';
 
 
 

@@ -376,7 +376,7 @@ class GroupsCubit extends Cubit<GroupsState> {
     required String image,
     required String userPost,
   }) async {
-    emit(SavePostLoadingState());
+    emit(SavePostLoadingState(postId: postId));
     await firebaseFirestoreRepository.savePost(
         userId: userId,
         postId: postId,

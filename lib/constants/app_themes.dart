@@ -50,6 +50,7 @@ class MyThemes {
           indicatorColor: Color(0x74e3e0e0),
           height: 50,
           backgroundColor:Colors.white,
+          surfaceTintColor: Colors.white,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         ),
       );

@@ -1,8 +1,6 @@
 import 'package:book/data/models/group_model.dart';
 import 'package:book/ui/widgets/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
 
 class FirebaseFirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -39,6 +37,10 @@ class FirebaseFirestoreService {
     return null;
   }
 
+
+
+
+
   Future firestoreAddFavoriteField({
     required String userId,
     required String data,
@@ -70,6 +72,10 @@ class FirebaseFirestoreService {
       return 1;
     }
   }
+
+
+
+
 
   Future<int?>? firestorePushBookRate({
     required double bookRate,
@@ -120,6 +126,10 @@ class FirebaseFirestoreService {
     return null;
   }
 
+
+
+
+
   Future<void> firestoreCreateGroup({
     required String name,
     required List admins,
@@ -156,6 +166,10 @@ class FirebaseFirestoreService {
     }
     return;
   }
+
+
+
+
 
   Future firestoreAddBookMark({
     required String userId,
@@ -200,6 +214,10 @@ class FirebaseFirestoreService {
     return null;
   }
 
+
+
+
+
   Future<QuerySnapshot<Map<String, dynamic>>?>? firestoreGetCourses() async {
     try {
       return await _db.collection('courses').get();
@@ -236,6 +254,10 @@ class FirebaseFirestoreService {
     }
   }
 
+
+
+
+
   Future<String?>? firestoreCreateNewPost({
     required Map<String, dynamic> data,
     required groupId,
@@ -267,6 +289,7 @@ class FirebaseFirestoreService {
     }
   }
 
+
   Stream<QuerySnapshot<Map<String, dynamic>>>? firestoreGetGroupPosts(
       {required String groupId}) {
     try {
@@ -282,6 +305,10 @@ class FirebaseFirestoreService {
     }
     return null;
   }
+
+
+
+
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? firestoreGetGroupPolls(
       {required String groupId}) {
@@ -299,6 +326,10 @@ class FirebaseFirestoreService {
     return null;
   }
 
+
+
+
+
   Future<QuerySnapshot<Map<String, dynamic>>?>? firestoreGetAllUsers() async {
     try {
       return await _db.collection('users').get();
@@ -307,6 +338,10 @@ class FirebaseFirestoreService {
     }
     return null;
   }
+
+
+
+
 
   firestoreLikePost({
     required String groupId,
@@ -355,12 +390,17 @@ class FirebaseFirestoreService {
           .collection('posts/$groupId/groupPosts')
           .doc(postId)
           .collection('comments')
+          .orderBy('dateTime',descending: true,)
           .get();
     } catch (e) {
       showingToast(msg: e.toString(), state: ToastState.error);
     }
     return null;
   }
+
+
+
+
 
   Future firestoreUpdateUserBooks(
       {required String userId, required String bookId}) async {
@@ -372,6 +412,8 @@ class FirebaseFirestoreService {
       showingToast(msg: e.toString(), state: ToastState.error);
     }
   }
+
+
 
   firestoreSavePost({
     required String userId,
@@ -419,6 +461,8 @@ class FirebaseFirestoreService {
     }
   }
 
+
+
   Future firestoreAddLastBookToUserDashBoard(
       {required String userId, required String bookId}) async {
     try {
@@ -429,6 +473,10 @@ class FirebaseFirestoreService {
       showingToast(msg: e.toString(), state: ToastState.error);
     }
   }
+
+
+
+
 
   Future<String?>? firestoreSendMessage({
     required Map<String, dynamic> data,
@@ -499,6 +547,9 @@ class FirebaseFirestoreService {
       showingToast(msg: e.toString(), state: ToastState.error);
     }
   }
+
+
+
 
   Future firestoreCreatePoll({
     required String groupId,

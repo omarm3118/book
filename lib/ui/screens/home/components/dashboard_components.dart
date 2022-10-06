@@ -80,7 +80,8 @@ Card bookProgressCard(
   required String bookImage,
   required BookModel book,
 }) {
-  double bookTrack = readingPages / totalPages;
+  double bookTrack = (readingPages + 1) / totalPages;
+
   return Card(
     margin: EdgeInsets.zero,
     surfaceTintColor: Colors.white,
@@ -112,18 +113,20 @@ Card bookProgressCard(
   );
 }
 
-Container bookCard(String bookImage) {
-  return Container(
-    width: 108.0,
-    height: 161.0,
-    clipBehavior: Clip.antiAlias,
-    decoration: BoxDecoration(
-      color: const Color(0xffd1cde9),
-      borderRadius: BorderRadius.circular(8.0),
-    ),
-    child: CachedNetworkImage(
-      imageUrl: bookImage,
-      fit: BoxFit.cover,
+Card bookCard(String bookImage) {
+  return Card(
+    child: Container(
+      width: 108.0,
+      height: 161.0,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: const Color(0xffd1cde9),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: CachedNetworkImage(
+        imageUrl: bookImage,
+        fit: BoxFit.cover,
+      ),
     ),
   );
 }
@@ -200,172 +203,18 @@ InkWell readerProgressInfo(
   int? secondNumber,
   required String path,
   required String trackName,
+  bool canTap = true,
 }) {
   return InkWell(
     onTap: () {
-      showDialog(
-        context: context,
-        builder: (_) {
-          return BlocProvider(
-            create: (ctx) => LayoutCubit(
-              firebaseFirestoreRepository: FirebaseFirestoreRepository(),
-              firebaseStorageRepository: FirebaseStorageRepository(),
-            ),
-            child: BlocConsumer<LayoutCubit, LayoutState>(
-              listener: (context, state) {
-                if (state is UpdateTrackSuccessState) {
-                  Navigator.pop(context);
-                }
-              },
-              builder: (context, state) {
-                return Dialog(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: SizedBox(
-                    height: 300,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
-                              height: 130,
-                              width: 250,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20)),
-                              ),
-                              child: Image.asset(
-                                'assets/images/book_animation.gif',
-                                cacheWidth: 750,
-                                cacheHeight: 390,
-                                width: 750,
-                                height: 390,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 150,
-                            child: Card(
-                              elevation: 0,
-                              surfaceTintColor: Colors.white,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              defaultRadius,
-                                            ),
-                                          ),
-                                          minimumSize: const Size(50, 50),
-                                          maximumSize: const Size(50, 50),
-                                        ),
-                                        onPressed: () {
-                                          if (number != 0) {
-                                            number--;
-                                            if (secondNumber != null) {
-                                              secondNumber =
-                                                  (secondNumber! - 1);
-                                            }
-                                            BlocProvider.of<LayoutCubit>(
-                                                    context)
-                                                .changeNumber();
-                                          }
-                                        },
-                                        child: const Text(
-                                          '-',
-                                          style: TextStyle(fontSize: 30),
-                                        ),
-                                      ),
-                                      Text(number.toString()),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              defaultRadius,
-                                            ),
-                                          ),
-                                          minimumSize: const Size(50, 50),
-                                          maximumSize: const Size(50, 50),
-                                        ),
-                                        onPressed: () {
-                                          number++;
-                                          if (secondNumber != null) {
-                                            secondNumber = (secondNumber! + 1);
-                                          }
-                                          BlocProvider.of<LayoutCubit>(context)
-                                              .changeNumber();
-                                        },
-                                        child: const Icon(Icons.add),
-                                      )
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  SizedBox(
-                                    width: 320,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: TextButton(
-                                            onPressed: () async {
-                                              await BlocProvider.of<
-                                                      LayoutCubit>(context)
-                                                  .updateUserTrack(
-                                                userId:
-                                                    LayoutCubit.getUser!.uId,
-                                                trackName: trackName,
-                                                tracValue: number,
-                                                secondTrackName: trackName ==
-                                                        'numberOfPagesToday'
-                                                    ? 'numberOfPagesRead'
-                                                    : null,
-                                                secondTrackValue: trackName ==
-                                                        'numberOfPagesToday'
-                                                    ? secondNumber
-                                                    : null,
-                                              );
-                                            },
-                                            child: const Text(
-                                              'تأكيد الإنجاز',
-                                            ),
-                                          ),
-                                        ),
-                                        if (state is UpdateTrackLoadingState)
-                                          const RefreshProgressIndicator()
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
-      );
+      if (canTap) {
+        dialogToUpdateStatus(
+          context: context,
+          number: number,
+          secondNumber: secondNumber,
+          trackName: trackName,
+        );
+      }
     },
     child: Card(
       margin: const EdgeInsets.all(2),
@@ -466,5 +315,186 @@ NavigationBar navigationBar(layoutCubit, context) {
         label: '',
       ),
     ],
+  );
+}
+
+Future dialogToUpdateStatus({
+  required BuildContext context,
+  required int number,
+  int? secondNumber,
+  required String trackName,
+}) {
+  if (secondNumber != null && secondNumber < 0) {
+    secondNumber = 0;
+  }
+  return showDialog(
+    context: context,
+    builder: (_) {
+      return BlocProvider(
+        create: (ctx) => LayoutCubit(
+          firebaseFirestoreRepository: FirebaseFirestoreRepository(),
+          firebaseStorageRepository: FirebaseStorageRepository(),
+        ),
+        child: BlocConsumer<LayoutCubit, LayoutState>(
+          listener: (context, state) {
+            if (state is UpdateTrackSuccessState) {
+              Navigator.pop(context);
+            }
+          },
+          builder: (context, state) {
+            return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: SizedBox(
+                height: 350,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          height: 130,
+                          width: 250,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(20)),
+                          ),
+                          child: Image.asset(
+                            'assets/images/book_animation.gif',
+                            cacheWidth: 750,
+                            cacheHeight: 390,
+                            width: 750,
+                            height: 390,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 180,
+                        child: Card(
+                          elevation: 0,
+                          surfaceTintColor: Colors.white,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          defaultRadius,
+                                        ),
+                                      ),
+                                      minimumSize: const Size(50, 50),
+                                      maximumSize: const Size(50, 50),
+                                    ),
+                                    onPressed: () {
+                                      if (number != 0) {
+                                        number--;
+                                        if (secondNumber != null) {
+                                          secondNumber = (secondNumber! - 1);
+                                        }
+                                        BlocProvider.of<LayoutCubit>(context)
+                                            .changeNumber();
+                                      }
+                                    },
+                                    child: const Text(
+                                      '-',
+                                      style: TextStyle(fontSize: 30),
+                                    ),
+                                  ),
+                                  Text(number.toString()),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          defaultRadius,
+                                        ),
+                                      ),
+                                      minimumSize: const Size(50, 50),
+                                      maximumSize: const Size(50, 50),
+                                    ),
+                                    onPressed: () {
+                                      number++;
+                                      if (secondNumber != null) {
+                                        secondNumber = (secondNumber! + 1);
+                                      }
+                                      BlocProvider.of<LayoutCubit>(context)
+                                          .changeNumber();
+                                    },
+                                    child: const Icon(Icons.add),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      await BlocProvider.of<LayoutCubit>(
+                                              context)
+                                          .updateUserTrack(
+                                        userId: LayoutCubit.getUser!.uId,
+                                        trackName: trackName,
+                                        tracValue: number,
+                                        secondTrackName: trackName ==
+                                                'numberOfPagesToday'
+                                            ? 'numberOfPagesRead'
+                                            : null,
+                                        secondTrackValue: trackName ==
+                                                'numberOfPagesToday'
+                                            ? secondNumber
+                                            : null,
+                                      );
+                                    },
+                                    child: const Text(
+                                      'تأكيد الإنجاز',
+                                    ),
+                                  ),
+                                  if (state is UpdateTrackLoadingState)
+                                    const RefreshProgressIndicator()
+                                ],
+                              ),
+                                  const Spacer(),
+
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                     number=0;
+                                     BlocProvider.of<LayoutCubit>(context)
+                                         .changeNumber();
+                                    },
+                                    child: const Text(
+                                      'مسح عدد الصفحات',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    },
   );
 }

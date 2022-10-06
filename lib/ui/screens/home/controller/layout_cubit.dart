@@ -14,7 +14,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:http/http.dart' as http;
@@ -64,7 +63,7 @@ class LayoutCubit extends Cubit<LayoutState> {
     bool isCover = false,
   }) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker
+     await picker
         .pickImage(
       source: ImageSource.gallery,
       maxWidth: 600,
@@ -367,7 +366,7 @@ class LayoutCubit extends Cubit<LayoutState> {
             await _updateUserImage(uImage: userImage, userId: _appUser!.uId);
       if (coverImage != null)
         cImage =
-            await _updateCoverImage(cImage: userImage, userId: _appUser!.uId);
+            await _updateCoverImage(cImage: coverImage, userId: _appUser!.uId);
       await firebaseFirestoreRepository.updateUserInfo(
         name: name,
         bio: bio,

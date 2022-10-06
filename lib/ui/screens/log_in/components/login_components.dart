@@ -50,13 +50,18 @@ BlocBuilder loginPasswordField(
         color: MyColors.defaultIconColor,
       ),
       suffixIcon: IconButton(
-          color: MyColors.defaultIconColor,
-          onPressed: () {
-            cubit.changePasswordVisibility();
-          },
-          icon: Icon(!cubit.isSecure
+        color: MyColors.defaultIconColor,
+
+        onPressed: () {
+          cubit.changePasswordVisibility();
+        },
+        icon: Icon(
+          !cubit.isSecure
               ? Icons.visibility_outlined
-              : Icons.visibility_off_outlined)),
+              : Icons.visibility_off_outlined,
+
+        ),
+      ),
       isPassword: cubit.isSecure,
       keyboardType: TextInputType.visiblePassword,
     ),

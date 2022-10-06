@@ -18,14 +18,6 @@ class LayoutScreen extends StatefulWidget {
 class _LayoutScreenState extends State<LayoutScreen> {
   @override
   Widget build(BuildContext context) {
-    if (FirebaseAuth.instance.currentUser != null) {
-      if (!(FirebaseAuth.instance.currentUser!.emailVerified)) {
-        Navigator.pushReplacementNamed(
-          context,
-          emailVerificationRoute,
-        );
-      }
-    }
     LayoutCubit layoutCubit = BlocProvider.of<LayoutCubit>(context);
     if (LayoutCubit.getUser != null) {
       if (LayoutCubit.getUser!.favoriteFields.isNotEmpty) {
@@ -113,6 +105,21 @@ class _LayoutScreenState extends State<LayoutScreen> {
                               backgroundImage: CachedNetworkImageProvider(
                                 user!.image,
                               ),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: ElevatedButton.icon(
+                              style: TextButton.styleFrom(),
+                              onPressed: () {
+                                Navigator.pushNamed(context, googleMap);
+                              },
+                              label: Text(
+                              'متاجر الكتب القريبة',
+                              ),
+                              icon: Icon(Icons.location_on_outlined),
                             ),
                           ),
                         ),

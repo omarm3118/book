@@ -136,10 +136,10 @@ class SearchScreen extends StatelessWidget {
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 250,
+          maxCrossAxisExtent: 200,
           crossAxisSpacing: 20,
           mainAxisSpacing: 20,
-          childAspectRatio: 2 / 4,
+          childAspectRatio: 2.2 / 4,
         ),
         itemBuilder: (context, index) {
           return userBooksCard(

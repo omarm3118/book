@@ -251,7 +251,7 @@ class FirebaseFirestoreRepository {
       {required String groupId, required String postId}) async {
     QuerySnapshot<Map<String, dynamic>>? querySnapshot =
         await _firebaseFirestoreService.firestoreGetComments(
-            groupId: groupId, postId: postId);
+            groupId: groupId, postId: postId,);
 
     if (querySnapshot != null) {
       List<Comment> comments = [];

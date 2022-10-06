@@ -42,7 +42,10 @@ class AddCommentSuccessState extends GroupsState{}
 class GetCommentLoadingState extends GroupsState{}
 class GetCommentSuccessState extends GroupsState{}
 
-class SavePostLoadingState extends GroupsState{}
+class SavePostLoadingState extends GroupsState{
+late String postId;
+SavePostLoadingState({required this.postId});
+}
 class SavePostSuccessState extends GroupsState{}
 
 

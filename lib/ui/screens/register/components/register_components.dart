@@ -101,9 +101,10 @@ registerRegisterButton(GlobalKey<FormState> formKey, context,
   return BlocConsumer<RegisterCubit, RegisterState>(
     listener: (context, state) {
       if (state is AddUserToFirestoreSuccessState) {
-        FirebaseAuth.instance.currentUser?.sendEmailVerification();
+       // FirebaseAuth.instance.currentUser?.sendEmailVerification();
         Navigator.pop(context);
-        Navigator.pushReplacementNamed(context, emailVerificationRoute);
+       // Navigator.pushReplacementNamed(context, emailVerificationRoute);
+        Navigator.pushReplacementNamed(context, homeRoute);
       }
     },
     builder: (context, state) {

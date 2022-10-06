@@ -43,6 +43,27 @@ class FirebaseAuthService {
     return null;
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   Future<UserCredential?>? firebaseSignInWithEmail(
       {required String email, required String password}) async {
     try {

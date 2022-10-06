@@ -29,8 +29,8 @@ class ShowGroupUsersScreen extends StatelessWidget {
             );
           },
           leading: CircleAvatar(
-            child: CachedNetworkImage(
-              imageUrl: groupUsers![index].image,
+            backgroundImage: CachedNetworkImageProvider(
+              groupUsers[index].image,
             ),
           ),
           title: Text(groupUsers[index].name),

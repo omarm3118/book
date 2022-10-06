@@ -1,4 +1,3 @@
-import 'package:book/ui/screens/culture_courses/controller/culture_courses_cubit.dart';
 import 'package:book/ui/screens/home/controller/layout_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +18,6 @@ class CourseDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     LayoutCubit layoutCubit = BlocProvider.of(context);
-    CultureCoursesCubit cultureCoursesCubit = BlocProvider.of(context);
     books = layoutCubit.books
         .where((element) => booksId.contains(element.id))
         .toList();

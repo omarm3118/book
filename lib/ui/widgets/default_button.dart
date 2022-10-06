@@ -28,11 +28,12 @@ class DefaultButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           label,
-          style:labelStyle?? Theme.of(context).textTheme.labelLarge!.copyWith(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+          style: labelStyle ??
+              Theme.of(context).textTheme.labelLarge!.copyWith(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
         ),
       ),
     );

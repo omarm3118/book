@@ -24,6 +24,8 @@ class RegisterScreen extends StatelessWidget {
     // double screenHeightMinusStatusBar =
     //     MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     return Scaffold(
+      backgroundColor: MyColors.defaultBackgroundPurple,
+
       body: AnnotatedRegion(
         value: statusBarColor,
         child: CustomScrollView(
@@ -60,51 +62,62 @@ class RegisterScreen extends StatelessWidget {
   }
 
   loginBody(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: defaultPadding,
-        right: defaultPadding,
-        top: defaultPadding / 2,
-        bottom: defaultPadding / 4,
+    return Container(
+
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(defaultRadius))
       ),
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "إنشاء حساب",
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            registerNameField(nameController),
-            const SizedBox(
-              height: 8,
-            ),
-            registerLastNameField(lastNameController),
-            const SizedBox(
-              height: 8,
-            ),
-            registerEmailField(emailController),
-            const SizedBox(
-              height: 8,
-            ),
-            registerPasswordField(context, passwordController),
-            const SizedBox(
-              height: defaultPadding / 2,
-            ),
-            registerRegisterButton(
-              formKey,
-              context,
-              email: emailController,
-              password: passwordController,
-              name: nameController,
-              lastName: lastNameController,
-            ),
-            registerLoginButton(context),
-          ],
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: defaultPadding,
+          right: defaultPadding,
+          top: defaultPadding / 2,
+          bottom: defaultPadding / 4,
+        ),
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "إنشاء حساب",
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headlineSmall,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              registerNameField(nameController),
+              const SizedBox(
+                height: 8,
+              ),
+              registerLastNameField(lastNameController),
+              const SizedBox(
+                height: 8,
+              ),
+              registerEmailField(emailController),
+              const SizedBox(
+                height: 8,
+              ),
+              registerPasswordField(context, passwordController),
+              const SizedBox(
+                height: defaultPadding / 2,
+              ),
+              registerRegisterButton(
+                formKey,
+                context,
+                email: emailController,
+                password: passwordController,
+                name: nameController,
+                lastName: lastNameController,
+              ),
+              registerLoginButton(context),
+            ],
+          ),
         ),
       ),
     );

@@ -5,11 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseAuthRepository {
   final FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
 
-  Future<UserModel?>? registerWithEmail(
-      {required email,
-      required password,
-      required name,
-      required lastName}) async {
+  Future<UserModel?>? registerWithEmail({
+    required email,
+    required password,
+    required name,
+    required lastName}) async {
     UserCredential? userCredential = await _firebaseAuthService
         .firebaseRegisterWithEmail(email: email, password: password);
     if (userCredential == null) {

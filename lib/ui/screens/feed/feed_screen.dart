@@ -86,8 +86,10 @@ class FeedScreen extends StatelessWidget {
               ),
               Tab(
                 text: 'الرسائل',
-              )
+              ),
+
             ],
+
           ),
         ),
         body: TabBarView(

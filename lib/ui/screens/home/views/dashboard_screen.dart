@@ -200,6 +200,7 @@ class DashboardScreen extends StatelessWidget {
                       number: LayoutCubit.getUser!.numberOfPagesRead!,
                       path: 'assets/images/se.png',
                       trackName: 'numberOfPagesRead',
+                      canTap: false,
                     ),
                     readerProgressInfo(
                       context,

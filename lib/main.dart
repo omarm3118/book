@@ -4,11 +4,9 @@ import 'package:book/data/web_services/cache_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'bloc_observer.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc_observer.dart';
 import 'constants/app_themes.dart';
 import 'firebase_options.dart';
 
@@ -19,7 +17,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   BlocOverrides.runZoned(
-        () {
+    () {
       runApp(const MyApp());
     },
     blocObserver: AppBlocObserver(),
@@ -48,10 +46,10 @@ class MyApp extends StatelessWidget {
           initialRoute: isOnBoarding == null
               ? onBoardingRoute
               : (snap.data == null
-              ? loginRoute
-              : (snap.data != null && snap.data!.emailVerified)
-              ? homeRoute
-              : emailVerificationRoute),
+                  ? loginRoute
+                  : (snap.data != null && snap.data!.emailVerified)
+                      ? homeRoute
+                      : homeRoute),
         );
       },
     );

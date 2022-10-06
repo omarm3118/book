@@ -2,10 +2,13 @@
     package="com.example.book">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
    <application
         android:label="كتاب"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyDi29yYoSJW0KPmfBWG05NGQzDJ312E1h8"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
