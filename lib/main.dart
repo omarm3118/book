@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<User?> snap) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Flutter ',
+          title: 'Flutter www ',
           onGenerateRoute: AppRoute().generateRoute,
           theme: MyThemes.myLightTheme,
           initialRoute: isOnBoarding == null
